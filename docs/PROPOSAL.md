@@ -127,6 +127,8 @@ The analytics service and MediaSpace integration should be independently deploya
 
 ## 7. Milestones and estimates
 
+The [daily delivery plan](DAILY_PLAN.md) breaks these milestones into ordered workdays with concrete completion checks and a progress log.
+
 Estimates assume one experienced developer working close to full-time with ChatGPT/Codex assistance. They include implementation and integration work, but depend on timely decisions and access to the development/deployment environment. No subscription guarantees a delivery speed.
 
 | Milestone | Deliverable | Approximate effort |
