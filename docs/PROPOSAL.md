@@ -25,6 +25,8 @@ This service measures activity after visitors arrive. It does not implement SEO 
 
 ## 3. First-release scope
 
+The owner has clarified that content engagement is the first reporting priority. [Content engagement requirements](CONTENT_ENGAGEMENT.md) define video playback time, timeline coverage, sharing outcomes, and anonymous per-session reporting. These are part of the first-release scope; the detailed measurement definitions supersede a generic click-only interpretation. Public-facing analytics or social features remain deferred.
+
 ### Projects and access
 
 - An authenticated private dashboard with secure owner account setup, logout, and a documented recovery procedure.
@@ -139,6 +141,8 @@ Estimates assume one experienced developer working close to full-time with ChatG
 | 4. Dependable release | Broader browser tests, abuse controls, retention, backup/restore, performance checks, and deployment documentation | 5–15 additional working days |
 
 Planning targets:
+
+These are the original baseline estimates. The later [content engagement scope update](CONTENT_ENGAGEMENT.md#schedule-impact) provisionally adds 2–4 working days to the MVP and requires re-estimation after the player prototype.
 
 - **Working prototype:** approximately 2–5 working days from implementation start.
 - **Useful MVP:** approximately 1–2 weeks total.
