@@ -6,6 +6,8 @@ A proposed self-hosted analytics service for multiple websites, with an Angular 
 
 Read the [project proposal](docs/PROPOSAL.md) for scope, architecture, delivery milestones, estimates, and acceptance criteria.
 
+Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress. Start with Day 1; application implementation has not started.
+
 ## Intended outcome
 
 Understand visits, selected clicks, media opens, and scrolling across independently built websites through one private dashboard. Start with the owner's websites and use MediaSpace as the first integration. Keep session replay outside the first release.
