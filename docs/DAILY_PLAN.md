@@ -6,7 +6,7 @@ This plan implements the [proposal](PROPOSAL.md) using Angular, Node.js, Postgre
 
 ## How we will work
 
-Each day has one main outcome and a short completion check. At the start of a session, read the last handoff and choose the next unfinished day. At the end, demonstrate the outcome, run relevant checks, and record what actually passed. Do not advance a checkbox merely because code was written.
+Each day has one main outcome and a short completion check. At the start of a session, read the [progress tracker](PROGRESS.md) and choose the next unfinished task. At the end, demonstrate the outcome, run relevant checks, and record what actually passed. Do not advance a checkbox merely because code was written.
 
 Days are ordered work packages, not booked calendar dates or promises to finish in one sitting. The original 1–2 week MVP and 3–5 week release estimates assume near-full-time work with AI assistance. Shorter daily sessions extend the calendar schedule. If a package is too large, split it into A/B sessions and keep the same completion criterion.
 
@@ -146,10 +146,4 @@ After an authorized production pilot, use small daily tasks to compare expected 
 
 ## Daily handoff
 
-Update this log at the end of each session. Link commits/PRs and actual check results; leave incomplete items unchecked above.
-
-| Session/date | Day/package | Delivered | Evidence / PR | Blockers or decisions | Next task |
-| --- | --- | --- | --- | --- | --- |
-| Planning | Plan only | Daily work packages documented; no implementation | This document | Day 1 decisions pending | Start Day 1 |
-
-A useful handoff answers: what changed, what was verified, what remains uncertain, and the first action for the next session.
+Keep the completion history and latest handoff in [PROGRESS.md](PROGRESS.md), so there is one place to resume work. Keep this plan's task checkboxes consistent with that tracker. A useful handoff answers: what changed, what was verified, what remains uncertain, and the first action for the next session.
