@@ -1,6 +1,8 @@
 # Daily delivery plan
 
-Status: ready to begin Day 1. All implementation tasks are pending.
+Status: Day 1 design complete. Day 2 is next; application implementation is pending. See [decisions](DAY_01_DECISIONS.md) and [dashboard sketch](DASHBOARD_SKETCH.md).
+
+Scope update: prioritize the [content engagement requirements](CONTENT_ENGAGEMENT.md). Days 1–3 must include video measurement definitions/contracts, Days 4–5 include a player prototype, and Day 9 is split into 9A–9C below. Provisionally allow 2–4 additional working days and revisit the estimate after Day 5.
 
 This plan implements the [proposal](PROPOSAL.md) using Angular, Node.js, PostgreSQL, and a standalone browser tracker. Start with a private, single-owner tool for multiple websites; confirm that assumption on Day 1. Session replay remains a separate future phase.
 
@@ -16,9 +18,9 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 
 ### Day 1 — Agree on the smallest useful product
 
-- [ ] Confirm single-owner access, first two sites, and the three most important reports.
-- [ ] Decide expected event volume, retention period, session expiration, reporting time zone, and consent defaults. Record provisional assumptions where measurements are unavailable.
-- [ ] Choose the Node.js framework, migrations, backend source language, and owner authentication approach. Sketch the dashboard's project selector, date filter, overview, and event timeline.
+- [x] Confirm single-owner access, first two sites, and the three most important reports.
+- [x] Decide expected event volume, retention period, session expiration, reporting time zone, and consent defaults. Record provisional assumptions where measurements are unavailable.
+- [x] Choose the Node.js framework, migrations, backend source language, and owner authentication approach. Sketch the dashboard's project selector, date filter, overview, and event timeline.
 
 **Done when:** a short decisions document and dashboard sketch describe what we are building; unresolved decisions have an owner and do not silently become requirements.
 
@@ -81,6 +83,8 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 **Done when:** selecting a project or date range displays the expected real data and handles an unavailable API clearly.
 
 ### Day 9 — Add interaction analytics
+
+Split this work into separate sessions: **9A** implement and test player watch-time/coverage measurements; **9B** add sharing outcomes and idempotent aggregation; **9C** deliver content-performance, video-engagement, and anonymous session reports. Use the acceptance scenarios in [CONTENT_ENGAGEMENT.md](CONTENT_ENGAGEMENT.md). The original click/scroll tasks below remain in scope.
 
 - [ ] Track explicitly marked clicks and custom events without scraping arbitrary text or input values.
 - [ ] Add deduplicated scroll milestones for the document and configured scroll containers; define behavior when content grows.

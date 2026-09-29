@@ -2,13 +2,15 @@
 
 A proposed self-hosted analytics service for multiple websites, with an Angular dashboard, Node.js API, PostgreSQL database, and a small standalone JavaScript tracker.
 
-**Status:** proposal only. No application or tracking code has been implemented in this repository.
+**Status:** Day 1 design complete; Day 2 workspace setup is next. No application or tracking code has been implemented in this repository.
 
 Read the [project proposal](docs/PROPOSAL.md) for scope, architecture, delivery milestones, estimates, and acceptance criteria.
 
-Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress. Start with Day 1; application implementation has not started.
+Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress. Continue with Day 2; application implementation has not started.
 
 **Start each work session with the [progress tracker](docs/PROGRESS.md).** It lists remaining work, completed results, verification evidence, and the next action. Update it whenever a task is completed, in the same commit or PR as the work.
+
+The first dashboard priority is [content engagement](docs/CONTENT_ENGAGEMENT.md): per-content opens, video watch time and coverage, sharing actions, and anonymous session activity. These requirements also describe the updated MVP estimate.
 
 ## Intended outcome
 
@@ -31,3 +33,5 @@ TypeScript can be used where useful in development, including Angular's normal t
 Target a useful MVP in approximately **1–2 weeks**, and a dependable first release in approximately **3–5 weeks**, assuming one experienced developer working close to full-time with ChatGPT/Codex assistance. These are effort estimates, not guaranteed calendar dates. Scope and progress will be reviewed after the first working prototype.
 
 The proposal is versioned project documentation. Keep it in the default `main` branch as implementation proceeds, updating its status and recording significant scope changes.
+
+Day 1 deliverables: [decisions and measurement defaults](docs/DAY_01_DECISIONS.md), [dashboard sketch](docs/DASHBOARD_SKETCH.md).

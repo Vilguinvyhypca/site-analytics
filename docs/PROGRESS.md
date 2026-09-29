@@ -4,12 +4,13 @@ This is the working record for Site Analytics. Read it before starting work and 
 
 ## Current position
 
-- **Phase:** planning complete enough to begin Day 1; application implementation has not started.
-- **Completed implementation days:** 0 of 15.
-- **Current task:** Day 1 — confirm the smallest useful product.
-- **Next action:** agree on the three most useful reports and confirm the private, single-owner scope.
-- **Open decisions:** traffic target, retention, session definition, reporting time zone, consent behavior, Node.js framework, backend language, migrations, and authentication.
-- **Delivery state:** proposal is on `main`; the daily plan and this tracker are on `docs/daily-delivery-plan` in [PR #1](https://github.com/Vilguinvyhypca/site-analytics/pull/1), pending merge.
+- **Phase:** Day 1 design package complete; application implementation has not started.
+- **Completed work packages:** Day 1 (design) of 15; zero implementation packages completed.
+- **Current task:** Day 1 deliverables ready for review.
+- **Next action:** Day 2 — scaffold the isolated development workspace using [Day 1 decisions](DAY_01_DECISIONS.md).
+- **Confirmed reporting priority:** content performance, video engagement/watch time, and anonymous session activity; sharing actions included. See [content engagement requirements](CONTENT_ENGAGEMENT.md). Dashboard stays private initially.
+- **Provisional defaults:** traffic/retention/session/measurement values are recorded in the decisions document. Production domain, capacity, and activation requirements remain open with owners and deadlines.
+- **Delivery state:** PR #1 is merged; daily plan and progress tracker are verified on `main`. Content-engagement requirements were pushed after that merge and are carried forward with Day 1 documents on `docs/day-one-engagement-design`; this update is not yet merged.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
 
 ## Update steps for every completed task
@@ -25,11 +26,11 @@ Corrections should preserve the history: add a correction or reopening entry whe
 
 ## Remaining work overview
 
-All rows are initially pending. The steps below summarize the detailed checklists in the daily plan.
+Day 1 design is complete; implementation rows remain pending. The steps below summarize the detailed checklists in the daily plan.
 
 | Complete | Day | Outcome | Steps | Completion evidence |
 | --- | --- | --- | --- | --- |
-| [ ] | 1 | Product decisions | Confirm owner/sites/reports; set measurement and privacy defaults; choose tooling; sketch dashboard | Pending |
+| [x] | 1 | Product decisions | Scope and defaults recorded; tooling selected; outstanding decisions assigned; dashboard sketched | [Decisions](DAY_01_DECISIONS.md), [sketch](DASHBOARD_SKETCH.md) |
 | [ ] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | Pending |
 | [ ] | 3 | Valid event storage | Define schema/tables; validate bounded batches; enforce project status and deduplicate events | Pending |
 | [ ] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | Pending |
@@ -37,7 +38,7 @@ All rows are initially pending. The steps below summarize the detailed checklist
 | [ ] | 6 | Access and projects | Add owner login/logout; protect APIs; manage projects/origins/collection switches | Pending |
 | [ ] | 7 | Reporting API | Add project/date-scoped aggregates; define metric boundaries; verify fixture totals | Pending |
 | [ ] | 8 | Angular reports | Connect selectors/cards/chart/tables; handle loading/empty/error states; check accessibility | Pending |
-| [ ] | 9 | Interaction analytics | Add selected clicks/custom events; measure document/container scrolling; display session timelines | Pending |
+| [ ] | 9A–9C | Content engagement | Add player watch time/coverage, sharing outcomes, aggregation and content/session reports; retain click/scroll tracking | Pending |
 | [ ] | 10 | Two-site MVP | Integrate MediaSpace in development; verify overlays/feed/privacy; prove independent second-site integration | Pending |
 | [ ] | 11 | Privacy/browser verification | Exercise consent/storage/multi-tab cases; inspect payloads; test agreed browsers | Pending |
 | [ ] | 12 | Capacity and abuse controls | Harden limits; load-test agreed target; measure tracker/API/database costs; tune proven bottlenecks | Pending |
@@ -51,8 +52,8 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 
 | ID | Task or decision | Status | Completion condition |
 | --- | --- | --- | --- |
-| PLAN-1 | Merge planning documentation into `main` | PR #1 open | Verify the daily plan, tracker, and README links exist on `main` after merge |
-| DEC-1 | Confirm Day 1 product and technical decisions | Pending discussion | Record agreed choices and clearly labelled provisional assumptions |
+| PLAN-1 | Merge planning documentation into `main` | Complete: PR #1 merged and files verified | Follow-up content requirements and Day 1 changes still need their own merge |
+| DEC-1 | Record Day 1 decisions | Complete design baseline | [Defaults and outstanding decisions](DAY_01_DECISIONS.md) are explicit; production values remain reviewable |
 
 ## Completion history
 
@@ -77,6 +78,21 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 - **Evidence:** this document in [PR #1](https://github.com/Vilguinvyhypca/site-analytics/pull/1).
 - **Remaining:** all implementation work; confirm the documents reach `main` after merge.
 
+### September 29, 2026 — Content engagement scope clarified
+
+- **Completed:** recorded the owner's priority for content opens, per-video watch time, sharing actions, and session-level activity; deferred public-facing features. Defined proposed measurement rules, player integration steps, and acceptance scenarios.
+- **Verified:** documentation whitespace and relative-link checks passed before commit; no tracker or player code has been implemented.
+- **Evidence:** [content engagement requirements](CONTENT_ENGAGEMENT.md) in [PR #1](https://github.com/Vilguinvyhypca/site-analytics/pull/1).
+- **Remaining:** confirm detailed measurement/identity rules; prototype both players; revisit the MVP estimate with a provisional 2–4 day scope allowance. Day 1 remains incomplete.
+
+### September 29, 2026 — Day 1 design completed
+
+- **Completed:** recorded anonymous content engagement, social-profile arrival hypotheses, video measurement defaults, technical choices, and a dashboard sketch. Kept subscription implementation outside scope.
+- **Verified:** checked all three Day 1 deliverables against the daily plan; documentation whitespace and relative links passed. PR #1 is merged and the planning files exist on `main`.
+- **Evidence:** [decisions](DAY_01_DECISIONS.md), [sketch](DASHBOARD_SKETCH.md), branch `docs/day-one-engagement-design`.
+- **Correction:** the earlier content-engagement entry referred to PR #1, but that update was pushed after its merge. Its commit has now been carried into the new branch so it is not lost.
+- **Remaining:** Day 2 implementation; production defaults are provisional. No application code has been implemented.
+
 For future entries, copy this structure and replace every placeholder:
 
 ```markdown
@@ -90,8 +106,8 @@ For future entries, copy this structure and replace every placeholder:
 
 ## Next-session handoff
 
-**Start here:** Day 1 in the [daily plan](DAILY_PLAN.md).
+**Start here:** Day 2 in the [daily plan](DAILY_PLAN.md), using the [Day 1 decisions](DAY_01_DECISIONS.md).
 
-**First discussion:** which three reports should the owner see first, and is this still a private tool for the owner's websites only?
+**First action:** inspect local runtimes and select compatible maintained versions; scaffold Angular, Fastify, contracts, tracker, and isolated development PostgreSQL.
 
-**Expected output:** recorded product/tooling decisions and a small dashboard sketch. Update this tracker as individual tasks finish; mark Day 1 complete only after its completion criterion is met.
+**Expected output:** reproducible local startup and checks with a placeholder dashboard and health endpoint. No production configuration or MediaSpace runtime changes.
