@@ -10,6 +10,8 @@ Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task,
 
 **Start each work session with the [progress tracker](docs/PROGRESS.md).** It lists remaining work, completed results, verification evidence, and the next action. Update it whenever a task is completed, in the same commit or PR as the work.
 
+The first dashboard priority is [content engagement](docs/CONTENT_ENGAGEMENT.md): per-content opens, video watch time and coverage, sharing actions, and anonymous session activity. These requirements also describe the updated MVP estimate.
+
 ## Intended outcome
 
 Understand visits, selected clicks, media opens, and scrolling across independently built websites through one private dashboard. Start with the owner's websites and use MediaSpace as the first integration. Keep session replay outside the first release.

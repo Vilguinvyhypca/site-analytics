@@ -7,7 +7,8 @@ This is the working record for Site Analytics. Read it before starting work and 
 - **Phase:** planning complete enough to begin Day 1; application implementation has not started.
 - **Completed implementation days:** 0 of 15.
 - **Current task:** Day 1 — confirm the smallest useful product.
-- **Next action:** agree on the three most useful reports and confirm the private, single-owner scope.
+- **Next action:** define video measurement rules and anonymous identity boundaries, then finish Day 1's technical decisions.
+- **Confirmed reporting priority:** content performance, video engagement/watch time, and anonymous session activity; sharing actions included. See [content engagement requirements](CONTENT_ENGAGEMENT.md). Dashboard stays private initially.
 - **Open decisions:** traffic target, retention, session definition, reporting time zone, consent behavior, Node.js framework, backend language, migrations, and authentication.
 - **Delivery state:** proposal is on `main`; the daily plan and this tracker are on `docs/daily-delivery-plan` in [PR #1](https://github.com/Vilguinvyhypca/site-analytics/pull/1), pending merge.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
@@ -37,7 +38,7 @@ All rows are initially pending. The steps below summarize the detailed checklist
 | [ ] | 6 | Access and projects | Add owner login/logout; protect APIs; manage projects/origins/collection switches | Pending |
 | [ ] | 7 | Reporting API | Add project/date-scoped aggregates; define metric boundaries; verify fixture totals | Pending |
 | [ ] | 8 | Angular reports | Connect selectors/cards/chart/tables; handle loading/empty/error states; check accessibility | Pending |
-| [ ] | 9 | Interaction analytics | Add selected clicks/custom events; measure document/container scrolling; display session timelines | Pending |
+| [ ] | 9A–9C | Content engagement | Add player watch time/coverage, sharing outcomes, aggregation and content/session reports; retain click/scroll tracking | Pending |
 | [ ] | 10 | Two-site MVP | Integrate MediaSpace in development; verify overlays/feed/privacy; prove independent second-site integration | Pending |
 | [ ] | 11 | Privacy/browser verification | Exercise consent/storage/multi-tab cases; inspect payloads; test agreed browsers | Pending |
 | [ ] | 12 | Capacity and abuse controls | Harden limits; load-test agreed target; measure tracker/API/database costs; tune proven bottlenecks | Pending |
@@ -79,6 +80,13 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 
 For future entries, copy this structure and replace every placeholder:
 
+### September 29, 2026 — Content engagement scope clarified
+
+- **Completed:** recorded the owner's priority for content opens, per-video watch time, sharing actions, and session-level activity; deferred public-facing features. Defined proposed measurement rules, player integration steps, and acceptance scenarios.
+- **Verified:** documentation whitespace and relative-link checks passed before commit; no tracker or player code has been implemented.
+- **Evidence:** [content engagement requirements](CONTENT_ENGAGEMENT.md) in [PR #1](https://github.com/Vilguinvyhypca/site-analytics/pull/1).
+- **Remaining:** confirm detailed measurement/identity rules; prototype both players; revisit the MVP estimate with a provisional 2–4 day scope allowance. Day 1 remains incomplete.
+
 ```markdown
 ### YYYY-MM-DD — Day N / short task name
 
@@ -92,6 +100,6 @@ For future entries, copy this structure and replace every placeholder:
 
 **Start here:** Day 1 in the [daily plan](DAILY_PLAN.md).
 
-**First discussion:** which three reports should the owner see first, and is this still a private tool for the owner's websites only?
+**First discussion:** finalize what counts as engaged playback, the anonymous session/returning-visitor boundary, and Day 1's remaining technical choices. The priority reports and private-dashboard direction have now been recorded.
 
 **Expected output:** recorded product/tooling decisions and a small dashboard sketch. Update this tracker as individual tasks finish; mark Day 1 complete only after its completion criterion is met.

@@ -2,6 +2,8 @@
 
 Status: ready to begin Day 1. All implementation tasks are pending.
 
+Scope update: prioritize the [content engagement requirements](CONTENT_ENGAGEMENT.md). Days 1–3 must include video measurement definitions/contracts, Days 4–5 include a player prototype, and Day 9 is split into 9A–9C below. Provisionally allow 2–4 additional working days and revisit the estimate after Day 5.
+
 This plan implements the [proposal](PROPOSAL.md) using Angular, Node.js, PostgreSQL, and a standalone browser tracker. Start with a private, single-owner tool for multiple websites; confirm that assumption on Day 1. Session replay remains a separate future phase.
 
 ## How we will work
@@ -81,6 +83,8 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 **Done when:** selecting a project or date range displays the expected real data and handles an unavailable API clearly.
 
 ### Day 9 — Add interaction analytics
+
+Split this work into separate sessions: **9A** implement and test player watch-time/coverage measurements; **9B** add sharing outcomes and idempotent aggregation; **9C** deliver content-performance, video-engagement, and anonymous session reports. Use the acceptance scenarios in [CONTENT_ENGAGEMENT.md](CONTENT_ENGAGEMENT.md). The original click/scroll tasks below remain in scope.
 
 - [ ] Track explicitly marked clicks and custom events without scraping arbitrary text or input values.
 - [ ] Add deduplicated scroll milestones for the document and configured scroll containers; define behavior when content grows.
