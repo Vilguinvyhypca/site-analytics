@@ -1,6 +1,6 @@
 # Daily delivery plan
 
-Status: ready to begin Day 1. All implementation tasks are pending.
+Status: Day 2 foundation implemented and locally verified. Day 1 product defaults remain provisional in [DECISIONS.md](DECISIONS.md). Next: Day 3 event storage.
 
 This plan implements the [proposal](PROPOSAL.md) using Angular, Node.js, PostgreSQL, and a standalone browser tracker. Start with a private, single-owner tool for multiple websites; confirm that assumption on Day 1. Session replay remains a separate future phase.
 
@@ -24,9 +24,9 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 
 ### Day 2 — Make the development workspace run
 
-- [ ] Scaffold the Angular dashboard, Node.js API, tracker package, and shared event contracts.
-- [ ] Provide isolated development PostgreSQL, an initial migration, and safe example configuration without real credentials.
-- [ ] Add startup, lint/type-check, and focused-test commands plus basic CI.
+- [x] Scaffold the Angular dashboard, Node.js API, tracker package, and shared event contracts.
+- [x] Provide isolated development PostgreSQL, an initial migration, and safe example configuration without real credentials.
+- [x] Add startup, lint/type-check, and focused-test commands plus basic CI.
 
 **Done when:** the setup instructions start a dashboard placeholder and API health endpoint; a clean development database can be initialized without touching MediaSpace or production.
 

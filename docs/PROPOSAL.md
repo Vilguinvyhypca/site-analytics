@@ -2,7 +2,7 @@
 
 Date: September 29, 2026
 
-Status: proposed; implementation has not started
+Status: Day 2 development foundation implemented and locally verified; no production deployment or visitor collection. See [progress](PROGRESS.md) and [local setup](SETUP.md).
 
 Working name: Site Analytics
 
@@ -99,7 +99,7 @@ packages/contracts/   Shared event schema and validation contracts
 docs/                 Setup, architecture, event definitions, and operations
 ```
 
-Choose the Node.js HTTP framework, migration tool, chart library, and authentication approach during the first milestone. Do not add Redis, a message broker, or multiple database systems without a concrete need.
+The development foundation uses Fastify, TypeScript, and an ordered SQL migration runner. Chart and authentication implementation choices remain for their milestones. Do not add Redis, a message broker, or multiple database systems without a concrete need.
 
 ## 5. Privacy and data boundaries
 

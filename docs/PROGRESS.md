@@ -4,12 +4,12 @@ This is the working record for Site Analytics. Read it before starting work and 
 
 ## Current position
 
-- **Phase:** planning complete enough to begin Day 1; application implementation has not started.
-- **Completed implementation days:** 0 of 15.
-- **Current task:** Day 1 — confirm the smallest useful product.
-- **Next action:** agree on the three most useful reports and confirm the private, single-owner scope.
-- **Open decisions:** traffic target, retention, session definition, reporting time zone, consent behavior, Node.js framework, backend language, migrations, and authentication.
-- **Delivery state:** proposal is on `main`; the daily plan and this tracker are on `docs/daily-delivery-plan` in [PR #1](https://github.com/Vilguinvyhypca/site-analytics/pull/1), pending merge.
+- **Phase:** Day 2 development foundation implemented and locally verified.
+- **Completed work packages:** 1 of 15 (Day 2); Day 1 product confirmation remains partial.
+- **Current task:** Day 2 complete; Day 3 event storage is next.
+- **Next action:** define the versioned event schema, bounded batch ingestion, two fixture projects, and deduplication.
+- **Open decisions:** production traffic target, retention, session definition, reporting time zone, consent behavior, and authentication. Technical foundation choices are implemented in development.
+- **Delivery state:** proposal, daily plan, and tracker are on `main`; PR #1 merged September 29, 2026 at 17:33 UTC (merge commit `c91babd`). Day 1 design and Day 2 implementation are on `feat/development-workspace`; not merged or deployed.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
 
 ## Update steps for every completed task
@@ -25,12 +25,12 @@ Corrections should preserve the history: add a correction or reopening entry whe
 
 ## Remaining work overview
 
-All rows are initially pending. The steps below summarize the detailed checklists in the daily plan.
+The steps below summarize the detailed checklists in the daily plan.
 
 | Complete | Day | Outcome | Steps | Completion evidence |
 | --- | --- | --- | --- | --- |
-| [ ] | 1 | Product decisions | Confirm owner/sites/reports; set measurement and privacy defaults; choose tooling; sketch dashboard | Pending |
-| [ ] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | Pending |
+| [ ] | 1 | Product decisions | Confirm owner/sites/reports; set measurement and privacy defaults; choose tooling; sketch dashboard | [Draft decisions and sketch](DECISIONS.md); owner choices pending |
+| [x] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | [Day 2 verification](verification/day-2.md) |
 | [ ] | 3 | Valid event storage | Define schema/tables; validate bounded batches; enforce project status and deduplicate events | Pending |
 | [ ] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | Pending |
 | [ ] | 5 | Verified prototype | Track SPA navigation; bound retries; test consent/exclusions/session behavior; confirm totals | Pending |
@@ -51,10 +51,40 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 
 | ID | Task or decision | Status | Completion condition |
 | --- | --- | --- | --- |
-| PLAN-1 | Merge planning documentation into `main` | PR #1 open | Verify the daily plan, tracker, and README links exist on `main` after merge |
-| DEC-1 | Confirm Day 1 product and technical decisions | Pending discussion | Record agreed choices and clearly labelled provisional assumptions |
+| PLAN-1 | Merge planning documentation into `main` | Verified merged; `c91babd` | Verify the daily plan, tracker, and README links exist on `main` after merge |
+| DEC-1 | Confirm Day 1 product and technical decisions | Drafted in [DECISIONS.md](DECISIONS.md); owner review pending | Record agreed choices and clearly labelled provisional assumptions |
 
 ## Completion history
+
+### September 29, 2026 — Day 2 runnable development foundation
+
+- **Completed:** four npm workspaces, Angular placeholder with actual dependency
+  status, Fastify health/readiness endpoints, shared contracts, an inert tracker
+  build, isolated local PostgreSQL, transactional SQL migrations, and CI configuration.
+- **Verified:** lint, strict TypeScript/Angular checks, API/tracker tests, all
+  builds, and real PostgreSQL migration tests passed. Browser checks confirmed
+  desktop/mobile rendering, live API/database connection, refresh interaction,
+  and no initial browser errors. A real database stop/restart also verified the
+  unavailable state, persistent data, and UI recovery. See the evidence record for limits.
+- **Evidence:** [Day 2 verification](verification/day-2.md), [setup](SETUP.md),
+  and implementation on `feat/development-workspace`.
+- **Remaining:** CI has not yet run on GitHub; Day 3 ingestion and all later
+  application milestones remain. No production collection or deployment.
+
+
+### September 29, 2026 — Day 1 design draft and recovered handoff
+
+- **Completed:** drafted report priorities, measurement defaults, tooling choices,
+  a dashboard sketch, and the transition from MediaSpace's existing experience
+  tracker. Listed unresolved owner decisions explicitly.
+- **Verified:** GitHub reports PR #1 merged; the local `main` checkout contains
+  its planning documents at `c91babd`. Documentation whitespace and local Markdown
+  links checked. No application behavior was tested because no application exists.
+- **Evidence:** [decision document](DECISIONS.md) on `docs/day-one-decisions`;
+  [merged planning PR](https://github.com/Vilguinvyhypca/site-analytics/pull/1).
+- **Remaining:** owner confirmation, Day 2 scaffolding, and all implementation.
+  Earlier entries that say PR #1 is pending describe the historical state.
+
 
 ### September 29, 2026 — Proposal and repository
 
@@ -90,8 +120,14 @@ For future entries, copy this structure and replace every placeholder:
 
 ## Next-session handoff
 
-**Start here:** Day 1 in the [daily plan](DAILY_PLAN.md).
+**Start here:** [local setup](SETUP.md) and [Day 2 verification](verification/day-2.md).
+The foundation is implemented on `feat/development-workspace`. No visitor events
+are accepted or collected. Dashboard defaults to loopback port 4201 because an
+existing unrelated development process already used 4200; API uses 4100 and
+local PostgreSQL uses 55432.
 
-**First discussion:** which three reports should the owner see first, and is this still a private tool for the owner's websites only?
-
-**Expected output:** recorded product/tooling decisions and a small dashboard sketch. Update this tracker as individual tasks finish; mark Day 1 complete only after its completion criterion is met.
+**Next implementation:** Day 3 schema and bounded batch ingestion. Use the
+existing migration runner; add a new migration rather than changing 001.
+Seed two development projects and test project isolation and event-ID deduplication.
+Keep recording off by default. Confirm outstanding product defaults as needed
+without mistaking development scaffolding for production approval.

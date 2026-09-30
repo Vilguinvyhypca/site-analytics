@@ -1,0 +1,10 @@
+<div class="shell">
+  <header><a class="brand" href="/" aria-label="Site Analytics home"><span class="mark" aria-hidden="true">▥</span> Site Analytics</a><span class="badge">Development workspace</span></header>
+  <main>
+    <div class="intro"><p class="eyebrow">YOUR WEBSITES, IN PERSPECTIVE</p><h1>Understand the visit.</h1><p class="subtitle">See how people arrive, what they explore, and where their visits end.</p></div>
+    <section class="connection" aria-label="Service connection"><div><span class="dot" aria-hidden="true"></span><span role="status">{{ connection() }}</span></div><button type="button" (click)="refresh()" [disabled]="checking()">{{ checking() ? 'Checking…' : 'Check connection' }}</button></section>
+    <section class="empty" aria-labelledby="empty-title"><span class="empty-icon" aria-hidden="true">↗</span><p class="eyebrow">A CLEAR START</p><h2 id="empty-title">Your first insights begin here.</h2><p>No websites are collecting activity yet. Once a website is connected, this overview will show its visitor activity.</p><span class="collection">Collection is off</span></section>
+    <div class="reports"><section><span class="number">01</span><h2>Arrival sources</h2><p>Understand which links and campaigns bring visitors to your websites.</p><span class="placeholder">Waiting for activity</span></section><section><span class="number">02</span><h2>Media engagement</h2><p>Follow media opens, playback, sharing, and discovery.</p><span class="placeholder">Waiting for activity</span></section><section><span class="number">03</span><h2>Where visits stop</h2><p>Explore visit sequences and spot moments that deserve a closer look.</p><span class="placeholder">Waiting for activity</span></section></div>
+    <p class="note">This is the workspace foundation. Website setup and visitor reports are still being built.</p>
+  </main><footer>Site Analytics <span>Private insights. Thoughtful measurement.</span></footer>
+</div>

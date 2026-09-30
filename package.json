@@ -1,0 +1,40 @@
+{
+  "name": "site-analytics",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": "^22.22.3 || ^24.15.0 || >=26.0.0"
+  },
+  "scripts": {
+    "dev": "concurrently --kill-others -n api,dashboard \"npm run dev:api\" \"npm run dev:dashboard\"",
+    "dev:api": "node --env-file-if-exists=.env --import tsx --watch apps/api/src/server.ts",
+    "dev:dashboard": "npm run dev -w @site-analytics/dashboard",
+    "db:dev": "node --env-file-if-exists=.env --import tsx scripts/dev-db.ts",
+    "db:migrate": "node --env-file-if-exists=.env --import tsx scripts/migrate.ts",
+    "build": "npm run build -w @site-analytics/contracts && npm run build -w @site-analytics/api && npm run build -w @site-analytics/tracker && npm run build -w @site-analytics/dashboard",
+    "typecheck": "npm run build -w @site-analytics/contracts && tsc --noEmit && npm run typecheck -w @site-analytics/dashboard",
+    "lint": "eslint .",
+    "test": "node --import tsx --test tests/*.test.ts",
+    "test:db": "node --import tsx --test tests/integration/*.test.ts",
+    "test:db:local": "node --import tsx scripts/test-db.ts",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^22.0.0",
+    "@types/pg": "^8.15.0",
+    "concurrently": "^9.2.0",
+    "embedded-postgres": "18.4.0-beta.17",
+    "esbuild": "^0.27.0",
+    "eslint": "^10.11.0",
+    "globals": "^17.0.0",
+    "tsx": "^4.21.0",
+    "typescript": "~6.0.3",
+    "typescript-eslint": "^8.0.0"
+  }
+}
