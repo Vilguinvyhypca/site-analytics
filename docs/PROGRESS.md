@@ -100,6 +100,13 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 - **Evidence:** [development setup](DEVELOPMENT.md), [health tests](../tests/health.test.ts), [database test](../scripts/test-database.mjs), [CI workflow](../.github/workflows/check.yml), branch `feat/day-two-workspace`.
 - **Remaining:** Day 3 event collection/storage; no reporting or owner login exists yet. Remote CI, merge, and deployment are not verified. Collection remains disabled. Tests requiring local sockets ran outside the filesystem sandbox; the browser required a container-compatible `--no-sandbox` launch flag.
 
+### September 30, 2026 — Owner development dashboard checks
+
+- **Completed:** owner tested the Day 2 dashboard from Windows through the SSH tunnel at `http://127.0.0.1:14200`.
+- **Verified:** owner confirmed API-connected/collection-disabled status and the connection button; reported that the layout works in Firefox developer-tools mobile emulation and remains unchanged after refreshing. Refresh is expected to preserve the same dashboard/status; no visible transition is required.
+- **Evidence:** owner-reported manual checks of workspace commit `fc43e00` in this session.
+- **Remaining:** mobile emulation does not verify a physical mobile browser. Tailscale access is deferred at the owner's request; adding an endpoint was denied and the subsequent administrator command was canceled. Day 3 event storage remains the next implementation task.
+
 For future entries, copy this structure and replace every placeholder:
 
 ```markdown
