@@ -1,6 +1,6 @@
 # Daily delivery plan
 
-Status: Day 1 design complete. Day 2 is next; application implementation is pending. See [decisions](DAY_01_DECISIONS.md) and [dashboard sketch](DASHBOARD_SKETCH.md).
+Status: Days 1–2 complete locally. Day 3 event storage is next. See [development setup](DEVELOPMENT.md), [decisions](DAY_01_DECISIONS.md), and [dashboard sketch](DASHBOARD_SKETCH.md).
 
 Scope update: prioritize the [content engagement requirements](CONTENT_ENGAGEMENT.md). Days 1–3 must include video measurement definitions/contracts, Days 4–5 include a player prototype, and Day 9 is split into 9A–9C below. Provisionally allow 2–4 additional working days and revisit the estimate after Day 5.
 
@@ -26,9 +26,9 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 
 ### Day 2 — Make the development workspace run
 
-- [ ] Scaffold the Angular dashboard, Node.js API, tracker package, and shared event contracts.
-- [ ] Provide isolated development PostgreSQL, an initial migration, and safe example configuration without real credentials.
-- [ ] Add startup, lint/type-check, and focused-test commands plus basic CI.
+- [x] Scaffold the Angular dashboard, Node.js API, tracker package, and shared event contracts.
+- [x] Provide isolated development PostgreSQL, an initial migration, and safe example configuration without real credentials.
+- [x] Add startup, lint/type-check, and focused-test commands plus basic CI.
 
 **Done when:** the setup instructions start a dashboard placeholder and API health endpoint; a clean development database can be initialized without touching MediaSpace or production.
 

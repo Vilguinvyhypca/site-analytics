@@ -1,0 +1,11 @@
+{
+  "name": "@site-analytics/tracker",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/index.ts --bundle --format=iife --global-name=SiteAnalytics --target=es2020 --minify --outfile=dist/tracker.js"
+  },
+  "dependencies": {
+    "@site-analytics/contracts": "*"
+  }
+}

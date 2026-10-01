@@ -2,11 +2,11 @@
 
 A proposed self-hosted analytics service for multiple websites, with an Angular dashboard, Node.js API, PostgreSQL database, and a small standalone JavaScript tracker.
 
-**Status:** Day 1 design complete; Day 2 workspace setup is next. No application or tracking code has been implemented in this repository.
+**Status:** Days 1–2 complete locally. The dashboard, API, contracts, and inert tracker scaffold are verified; visitor collection is not implemented. Day 3 event storage is next.
 
 Read the [project proposal](docs/PROPOSAL.md) for scope, architecture, delivery milestones, estimates, and acceptance criteria.
 
-Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress. Continue with Day 2; application implementation has not started.
+Use the [development setup](docs/DEVELOPMENT.md) to run the workspace. Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress.
 
 **Start each work session with the [progress tracker](docs/PROGRESS.md).** It lists remaining work, completed results, verification evidence, and the next action. Update it whenever a task is completed, in the same commit or PR as the work.
 

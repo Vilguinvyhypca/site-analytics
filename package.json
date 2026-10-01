@@ -1,0 +1,45 @@
+{
+  "name": "site-analytics",
+  "private": true,
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "engines": {
+    "node": ">=24.15.0 <25"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env scripts/dev.mjs",
+    "db:dev": "node scripts/database.mjs",
+    "db:migrate": "node --env-file-if-exists=.env scripts/migrate.mjs",
+    "build": "npm run build --workspaces --if-present",
+    "typecheck": "tsc --noEmit -p tsconfig.json && npm run typecheck -w @site-analytics/dashboard",
+    "lint": "eslint .",
+    "test": "tsx --test tests/*.test.ts",
+    "test:db": "node scripts/test-database.mjs",
+    "check": "npm run lint && npm run typecheck && npm test && npm run build"
+  },
+  "dependencies": {
+    "pg": "^8.16.3"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "@types/pg": "^8.15.5",
+    "agent-browser": "^0.21.0",
+    "embedded-postgres": "18.4.0-beta.17",
+    "esbuild": "^0.28.2",
+    "eslint": "^10.11.0",
+    "tsx": "^4.20.0",
+    "typescript": "~6.0.2",
+    "typescript-eslint": "^8.0.0"
+  },
+  "allowScripts": {
+    "agent-browser@0.21.4": true,
+    "esbuild@0.28.2": true,
+    "@embedded-postgres/linux-x64@18.4.0-beta.17": true,
+    "@parcel/watcher@2.6.0": true,
+    "lmdb@3.5.6": true,
+    "msgpackr-extract@3.0.4": true
+  }
+}

@@ -4,13 +4,13 @@ This is the working record for Site Analytics. Read it before starting work and 
 
 ## Current position
 
-- **Phase:** Day 1 design package complete; application implementation has not started.
-- **Completed work packages:** Day 1 (design) of 15; zero implementation packages completed.
-- **Current task:** Day 1 deliverables ready for review.
-- **Next action:** Day 2 — scaffold the isolated development workspace using [Day 1 decisions](DAY_01_DECISIONS.md).
+- **Phase:** Days 1–2 complete locally; runnable development workspace verified.
+- **Completed work packages:** Days 1–2 of 15; one implementation package completed.
+- **Current task:** Day 2 verified on `feat/day-two-workspace`; not merged or deployed.
+- **Next action:** Day 3 — versioned event schema, project/event tables, bounded batch collection, and deduplication.
 - **Confirmed reporting priority:** content performance, video engagement/watch time, and anonymous session activity; sharing actions included. See [content engagement requirements](CONTENT_ENGAGEMENT.md). Dashboard stays private initially.
 - **Provisional defaults:** traffic/retention/session/measurement values are recorded in the decisions document. Production domain, capacity, and activation requirements remain open with owners and deadlines.
-- **Delivery state:** PR #1 is merged; daily plan and progress tracker are verified on `main`. Content-engagement requirements were pushed after that merge and are carried forward with Day 1 documents on `docs/day-one-engagement-design`; this update is not yet merged.
+- **Delivery state:** PR #1 is merged. Day 1 follow-up documents and Day 2 implementation are present on `feat/day-two-workspace`; their merge and remote CI results have not been verified in this session.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
 
 ## Update steps for every completed task
@@ -26,12 +26,12 @@ Corrections should preserve the history: add a correction or reopening entry whe
 
 ## Remaining work overview
 
-Day 1 design is complete; implementation rows remain pending. The steps below summarize the detailed checklists in the daily plan.
+Days 1–2 are complete locally; subsequent implementation rows remain pending. The steps below summarize the detailed checklists in the daily plan.
 
 | Complete | Day | Outcome | Steps | Completion evidence |
 | --- | --- | --- | --- | --- |
 | [x] | 1 | Product decisions | Scope and defaults recorded; tooling selected; outstanding decisions assigned; dashboard sketched | [Decisions](DAY_01_DECISIONS.md), [sketch](DASHBOARD_SKETCH.md) |
-| [ ] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | Pending |
+| [x] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | [Setup](DEVELOPMENT.md), [API tests](../tests/health.test.ts), [database verification](../scripts/test-database.mjs) |
 | [ ] | 3 | Valid event storage | Define schema/tables; validate bounded batches; enforce project status and deduplicate events | Pending |
 | [ ] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | Pending |
 | [ ] | 5 | Verified prototype | Track SPA navigation; bound retries; test consent/exclusions/session behavior; confirm totals | Pending |
@@ -93,6 +93,13 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 - **Correction:** the earlier content-engagement entry referred to PR #1, but that update was pushed after its merge. Its commit has now been carried into the new branch so it is not lost.
 - **Remaining:** Day 2 implementation; production defaults are provisional. No application code has been implemented.
 
+### September 30, 2026 — Day 2 workspace recovered and verified
+
+- **Completed:** resumed the unfinished workspace on disk; verified Angular dashboard, Fastify health endpoint, contracts, inert standalone tracker, isolated PostgreSQL, checksum-protected migrations, and CI configuration. Added reproducible development instructions and corrected stale status documents.
+- **Verified:** `npm run check` passed lint, TypeScript/Angular checks, all three focused tests, and API/dashboard/tracker builds. `npm run test:db` passed initialization, repeat migration, and checksum rejection against temporary PostgreSQL. Agent-browser verified dashboard rendering, API-connected status, and the connection button; no browser errors were reported. Screenshot: ignored local `artifacts/day-two-dashboard.png`.
+- **Evidence:** [development setup](DEVELOPMENT.md), [health tests](../tests/health.test.ts), [database test](../scripts/test-database.mjs), [CI workflow](../.github/workflows/check.yml), branch `feat/day-two-workspace`.
+- **Remaining:** Day 3 event collection/storage; no reporting or owner login exists yet. Remote CI, merge, and deployment are not verified. Collection remains disabled. Tests requiring local sockets ran outside the filesystem sandbox; the browser required a container-compatible `--no-sandbox` launch flag.
+
 For future entries, copy this structure and replace every placeholder:
 
 ```markdown
@@ -106,8 +113,10 @@ For future entries, copy this structure and replace every placeholder:
 
 ## Next-session handoff
 
-**Start here:** Day 2 in the [daily plan](DAILY_PLAN.md), using the [Day 1 decisions](DAY_01_DECISIONS.md).
+**Start here:** Day 3 in the [daily plan](DAILY_PLAN.md), using the [Day 1 decisions](DAY_01_DECISIONS.md) and [development setup](DEVELOPMENT.md).
 
-**First action:** inspect local runtimes and select compatible maintained versions; scaffold Angular, Fastify, contracts, tracker, and isolated development PostgreSQL.
+**First action:** review shared event contracts and measurement rules, then add project/event migrations and validation tests for bounded collection. Preserve consent, origin, project isolation, and deduplication requirements.
 
-**Expected output:** reproducible local startup and checks with a placeholder dashboard and health endpoint. No production configuration or MediaSpace runtime changes.
+**Expected output:** valid bounded requests create expected rows; malformed requests fail; duplicate event IDs do not duplicate records within a project. Production and MediaSpace integration remain later work.
+
+**Runtime note:** this session restored the pinned Node.js under `/home/seodev/.local/share/site-analytics-node`. If Node is absent from PATH, run `export PATH=/home/seodev/.local/share/site-analytics-node/bin:$PATH` before the documented commands.
