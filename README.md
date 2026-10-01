@@ -1,6 +1,6 @@
 # Site Analytics
 
-A proposed self-hosted analytics service for multiple websites, with an Angular dashboard, Node.js API, PostgreSQL database, and a small standalone JavaScript tracker.
+A self-hosted analytics service in development for multiple websites, with an Angular dashboard, Node.js API, PostgreSQL database, and a small standalone JavaScript tracker.
 
 **Status:** Days 1–2 complete locally. The dashboard, API, contracts, and inert tracker scaffold are verified; visitor collection is not implemented. Day 3 event storage is next.
 
@@ -26,7 +26,43 @@ Understand visits, selected clicks, media opens, and scrolling across independen
 | Website integration | Standalone JavaScript browser tracker |
 | Hosting | Separate deployment on an Ubuntu server |
 
-TypeScript can be used where useful in development, including Angular's normal tooling. The browser tracker is distributed as JavaScript and must not require Angular, React, or Next.js on the host website. The Node.js framework and backend source language remain implementation decisions.
+The API uses Fastify and TypeScript. The browser tracker builds to standalone JavaScript and must not require Angular, React, or Next.js on the host website. Runtime versions and local setup are documented in the [development guide](docs/DEVELOPMENT.md).
+
+## Development dashboard from Windows
+
+The development servers run on Ubuntu and listen on loopback. To view the
+dashboard from Windows, keep the Ubuntu development servers running and open
+a Windows PowerShell terminal with this SSH tunnel, substituting your normal
+SSH username and server address:
+
+```powershell
+ssh -o ExitOnForwardFailure=yes -L 14200:127.0.0.1:4200 YOUR_USER@YOUR_SERVER
+```
+
+Leave that SSH connection open and visit [http://127.0.0.1:14200](http://127.0.0.1:14200)
+in the Windows browser. The dashboard proxy handles API requests; no separate
+API tunnel is required. Ubuntu's local dashboard address is `http://127.0.0.1:4200`.
+
+The current dashboard shows workspace status and placeholders for content
+performance, video engagement, and session activity. Reports, owner login,
+and visitor collection are not implemented yet.
+
+## Verification and next work
+
+Day 2 verification passed: `npm run check` (lint, type checks, three focused
+tests, and all workspace builds), `npm run test:db` (isolated PostgreSQL
+initialization, repeat migration, and checksum rejection), and browser checks.
+The owner also confirmed the connected status, connection button, Firefox
+mobile-emulation layout, and unchanged dashboard after refresh through the SSH
+tunnel. Physical mobile-browser testing remains pending.
+
+The work is committed locally on `feat/day-two-workspace`: workspace commit
+`fc43e00` and owner verification record `61ae101`. Merge, remote CI, and deployment
+have not been verified. Production collection remains disabled.
+
+Next: Day 3 project/event tables, bounded event validation and collection, and
+duplicate prevention. Tailscale dashboard access is deferred to a later session.
+See the [progress tracker](docs/PROGRESS.md) for the full handoff.
 
 ## Delivery target
 
