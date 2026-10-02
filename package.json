@@ -12,6 +12,7 @@
   "scripts": {
     "dev": "node --env-file-if-exists=.env scripts/dev.mjs",
     "db:dev": "node scripts/database.mjs",
+    "db:seed": "node scripts/seed-development.mjs",
     "db:migrate": "node --env-file-if-exists=.env scripts/migrate.mjs",
     "build": "npm run build --workspaces --if-present",
     "typecheck": "tsc --noEmit -p tsconfig.json && npm run typecheck -w @site-analytics/dashboard",

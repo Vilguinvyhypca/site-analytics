@@ -2,7 +2,7 @@
 
 A self-hosted analytics service in development for multiple websites, with an Angular dashboard, Node.js API, PostgreSQL database, and a small standalone JavaScript tracker.
 
-**Status:** Days 1–2 complete locally. The dashboard, API, contracts, and inert tracker scaffold are verified; visitor collection is not implemented. Day 3 event storage is next.
+**Status:** Days 1–3 complete locally. Validated batch collection and PostgreSQL event storage are verified; collection defaults to disabled and the browser tracker remains inert. Day 4 browser tracking is next.
 
 Read the [project proposal](docs/PROPOSAL.md) for scope, architecture, delivery milestones, estimates, and acceptance criteria.
 
@@ -45,24 +45,24 @@ API tunnel is required. Ubuntu's local dashboard address is `http://127.0.0.1:42
 
 The current dashboard shows workspace status and placeholders for content
 performance, video engagement, and session activity. Reports, owner login,
-and visitor collection are not implemented yet.
+and browser tracking are not implemented yet. The [collection guide](docs/COLLECTION.md)
+describes the new opt-in development endpoint.
 
 ## Verification and next work
 
-Day 2 verification passed: `npm run check` (lint, type checks, three focused
-tests, and all workspace builds), `npm run test:db` (isolated PostgreSQL
-initialization, repeat migration, and checksum rejection), and browser checks.
-The owner also confirmed the connected status, connection button, Firefox
-mobile-emulation layout, and unchanged dashboard after refresh through the SSH
-tunnel. Physical mobile-browser testing remains pending.
+Day 3 verification passed: `npm run check` (lint, type checks, focused tests,
+and all workspace builds), `npm run test:db` (real PostgreSQL collection,
+deduplication, isolation, rejection and rollback checks plus migration checks),
+and browser rendering/connection-button checks. Physical mobile-browser testing
+remains pending.
 
-The work is committed locally on `feat/day-two-workspace`: workspace commit
-`fc43e00` and owner verification record `61ae101`. Merge, remote CI, and deployment
-have not been verified. Production collection remains disabled.
+Day 3 work is on `feat/day-three-collection`, building on the locally verified
+Day 2 branch. Merge, remote CI, and deployment have not been verified.
+Production collection remains disabled.
 
-Next: Day 3 project/event tables, bounded event validation and collection, and
-duplicate prevention. Tailscale dashboard access is deferred to a later session.
-See the [progress tracker](docs/PROGRESS.md) for the full handoff.
+Next: Day 4 standalone browser tracking, explicit consent start/stop hooks,
+anonymous sessions, sanitized URLs and bounded batching. Tailscale dashboard
+access remains deferred. See the [progress tracker](docs/PROGRESS.md).
 
 ## Delivery target
 

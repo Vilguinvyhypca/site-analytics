@@ -4,13 +4,14 @@ This is the working record for Site Analytics. Read it before starting work and 
 
 ## Current position
 
-- **Phase:** Days 1–2 complete locally; runnable development workspace verified.
-- **Completed work packages:** Days 1–2 of 15; one implementation package completed.
-- **Current task:** Day 2 verified on `feat/day-two-workspace`; not merged or deployed.
-- **Next action:** Day 3 — versioned event schema, project/event tables, bounded batch collection, and deduplication.
+- **Phase:** Days 1–3 complete locally; bounded event collection/storage verified.
+- **Completed work packages:** Days 1–3 of 15; two implementation packages completed.
+- **Current task:** Day 3 verified on `feat/day-three-collection`; not merged or deployed.
+- **Next action:** Day 4 — standalone browser tracker, consent hooks, sessions, sanitized URLs, and bounded batching.
 - **Confirmed reporting priority:** content performance, video engagement/watch time, and anonymous session activity; sharing actions included. See [content engagement requirements](CONTENT_ENGAGEMENT.md). Dashboard stays private initially.
 - **Provisional defaults:** traffic/retention/session/measurement values are recorded in the decisions document. Production domain, capacity, and activation requirements remain open with owners and deadlines.
 - **Delivery state:** PR #1 is merged. Day 1 follow-up documents and Day 2 implementation are present on `feat/day-two-workspace`; their merge and remote CI results have not been verified in this session.
+- **Day 3 delivery:** implementation and verification are local on `feat/day-three-collection`; remote CI, merge and deployment remain unverified.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
 
 ## Update steps for every completed task
@@ -26,13 +27,13 @@ Corrections should preserve the history: add a correction or reopening entry whe
 
 ## Remaining work overview
 
-Days 1–2 are complete locally; subsequent implementation rows remain pending. The steps below summarize the detailed checklists in the daily plan.
+Days 1–3 are complete locally; subsequent implementation rows remain pending. The steps below summarize the detailed checklists in the daily plan.
 
 | Complete | Day | Outcome | Steps | Completion evidence |
 | --- | --- | --- | --- | --- |
 | [x] | 1 | Product decisions | Scope and defaults recorded; tooling selected; outstanding decisions assigned; dashboard sketched | [Decisions](DAY_01_DECISIONS.md), [sketch](DASHBOARD_SKETCH.md) |
 | [x] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | [Setup](DEVELOPMENT.md), [API tests](../tests/health.test.ts), [database verification](../scripts/test-database.mjs) |
-| [ ] | 3 | Valid event storage | Define schema/tables; validate bounded batches; enforce project status and deduplicate events | Pending |
+| [x] | 3 | Valid event storage | Versioned contracts/tables; bounded batches; project/origin checks; event deduplication | [Collection guide](COLLECTION.md), [API/database tests](../tests/collection.test.ts) |
 | [ ] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | Pending |
 | [ ] | 5 | Verified prototype | Track SPA navigation; bound retries; test consent/exclusions/session behavior; confirm totals | Pending |
 | [ ] | 6 | Access and projects | Add owner login/logout; protect APIs; manage projects/origins/collection switches | Pending |
@@ -107,6 +108,13 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 - **Evidence:** owner-reported manual checks of workspace commit `fc43e00` in this session.
 - **Remaining:** mobile emulation does not verify a physical mobile browser. Tailscale access is deferred at the owner's request; adding an endpoint was denied and the subsequent administrator command was canceled. Day 3 event storage remains the next implementation task.
 
+### October 2, 2026 — Day 3 event storage verified
+
+- **Completed:** versioned strict event contracts including content/video/sharing, project/event migration, isolated two-project seed command, opt-in bounded batch collector, exact project/origin checks, transactional writes and project-scoped event-ID deduplication. Updated dashboard health handling and excluded generated nested Angular cache from lint.
+- **Verified:** `npm run check` passed lint, TypeScript/Angular checks, five focused tests and all builds (the database-dependent test runs separately). `npm run test:db` passed all three collector tests against temporary real PostgreSQL, initial/repeat migration and checksum rejection. Confirmed stored payloads, cross-project isolation, malformed/oversized rejection, origin and disabled-project rejection, concurrent retry deduplication, and rollback after a later insert failure. Browser verified rendering, collection-disabled status, working connection button and no page errors; ignored screenshot `artifacts/day-three-dashboard.png`.
+- **Evidence:** [collection guide](COLLECTION.md), [contracts](../packages/contracts/src/index.ts), [migration](../migrations/002_collection.sql), [collection tests](../tests/collection.test.ts), branch `feat/day-three-collection`.
+- **Remaining:** browser tracker/consent integration is Day 4; raw playback snapshots still require Day 9 aggregation by playback/sequence. No reporting or owner login. Global collection remains off by default. Remote CI, merge and deployment remain unverified. Socket-based verification required execution outside the filesystem sandbox.
+
 For future entries, copy this structure and replace every placeholder:
 
 ```markdown
@@ -120,10 +128,10 @@ For future entries, copy this structure and replace every placeholder:
 
 ## Next-session handoff
 
-**Start here:** Day 3 in the [daily plan](DAILY_PLAN.md), using the [Day 1 decisions](DAY_01_DECISIONS.md) and [development setup](DEVELOPMENT.md).
+**Start here:** Day 4 in the [daily plan](DAILY_PLAN.md), using the [collection contract/setup](COLLECTION.md) and [Day 1 decisions](DAY_01_DECISIONS.md).
 
-**First action:** review shared event contracts and measurement rules, then add project/event migrations and validation tests for bounded collection. Preserve consent, origin, project isolation, and deduplication requirements.
+**First action:** implement the framework-independent tracker with explicit consent start/stop, project-scoped random session IDs, sanitized paths/referrer hosts, bounded batching, and an isolated static test page on port 4300. Keep admin/private-content exclusions and consent withdrawal requirements explicit.
 
-**Expected output:** valid bounded requests create expected rows; malformed requests fail; duplicate event IDs do not duplicate records within a project. Production and MediaSpace integration remain later work.
+**Expected output:** a permitted test visit creates expected PostgreSQL events, a denied visit sends none, and collection failures do not break the host page. Day 3 stores raw video snapshots without calculating watch totals; aggregation remains Day 9 work.
 
-**Runtime note:** this session restored the pinned Node.js under `/home/seodev/.local/share/site-analytics-node`. If Node is absent from PATH, run `export PATH=/home/seodev/.local/share/site-analytics-node/bin:$PATH` before the documented commands.
+**Runtime note:** use the pinned Node.js under `/home/seodev/.local/share/site-analytics-node`; run `export PATH=/home/seodev/.local/share/site-analytics-node/bin:$PATH` if needed. Collection requires `DATABASE_URL` plus explicit `COLLECTION_ENABLED=true`; the example stays false. `npm run db:seed` targets only the isolated localhost development database.

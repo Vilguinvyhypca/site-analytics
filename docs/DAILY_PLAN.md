@@ -1,6 +1,6 @@
 # Daily delivery plan
 
-Status: Days 1–2 complete locally. Day 3 event storage is next. See [development setup](DEVELOPMENT.md), [decisions](DAY_01_DECISIONS.md), and [dashboard sketch](DASHBOARD_SKETCH.md).
+Status: Days 1–3 complete locally. Day 4 browser tracking is next. See [development setup](DEVELOPMENT.md), [decisions](DAY_01_DECISIONS.md), and [dashboard sketch](DASHBOARD_SKETCH.md).
 
 Scope update: prioritize the [content engagement requirements](CONTENT_ENGAGEMENT.md). Days 1–3 must include video measurement definitions/contracts, Days 4–5 include a player prototype, and Day 9 is split into 9A–9C below. Provisionally allow 2–4 additional working days and revisit the estimate after Day 5.
 
@@ -34,9 +34,9 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 
 ### Day 3 — Store a valid event
 
-- [ ] Define the first versioned event schema and project/event tables.
-- [ ] Add batch collection with schema, size, timestamp, and property limits; use parameterized database writes.
-- [ ] Seed two development projects and reject unknown/disabled projects. Define origin checks and deduplication boundaries.
+- [x] Define the first versioned event schema and project/event tables.
+- [x] Add batch collection with schema, size, timestamp, and property limits; use parameterized database writes.
+- [x] Seed two development projects and reject unknown/disabled projects. Define origin checks and deduplication boundaries.
 
 **Done when:** a valid test request creates the expected rows; malformed/oversized requests fail; replaying an event ID does not duplicate it within its project.
 

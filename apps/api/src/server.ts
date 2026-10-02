@@ -1,5 +1,11 @@
+import pg from 'pg';
 import { createApp } from './app.js';
-const app = createApp();
+import { postgresStore } from './collection.js';
+const enabled = process.env.COLLECTION_ENABLED === 'true';
+if (enabled && !process.env.DATABASE_URL) throw new Error('DATABASE_URL required when collection is enabled');
+const pool = enabled ? new pg.Pool({ connectionString: process.env.DATABASE_URL, max: 5, connectionTimeoutMillis: 5000, statement_timeout: 5000 }) : undefined;
+const app = createApp(pool ? postgresStore(pool) : undefined);
+if (pool) app.addHook('onClose', async () => { await pool.end(); });
 const port = Number(process.env.API_PORT ?? 3100);
 await app.listen({ port, host: '127.0.0.1' });
 console.log(`Site Analytics API: http://127.0.0.1:${port}`);

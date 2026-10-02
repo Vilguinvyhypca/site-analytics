@@ -1,6 +1,6 @@
 # Content engagement requirements
 
-Status: requirements recorded; not implemented.
+Status: Day 3 event contracts and raw storage implemented; player adapters, aggregation and reports remain pending.
 
 ## Product priority
 
@@ -41,7 +41,7 @@ Pause, buffering, seeking, document visibility, player visibility, playback spee
 
 ## Implementation steps
 
-- [ ] Extend shared contracts with stable content IDs, content type, playback IDs, bounded progress summaries, and sharing outcome categories. Do not send raw signed playback URLs.
+- [x] Extend shared contracts with stable content IDs, content type, playback IDs, bounded progress summaries, and sharing outcome categories. Do not send raw signed playback URLs.
 - [ ] Add a small player adapter API alongside the framework-independent tracker. Implement adapters for MediaSpace's native video and Mux players through their supported events.
 - [ ] Accumulate playback measurements locally; send periodic bounded summaries and a best-effort final summary instead of every player time-update event.
 - [ ] Make progress updates idempotent using playback ID and sequence/version information. Retries must not double count time; reject implausible values and handle out-of-order updates.
