@@ -100,10 +100,16 @@ Migration 001 creates project configuration; 002 adds events. Run `npm run db:se
 | `apps/dashboard` | Angular dashboard and development API proxy |
 | `apps/api` | Fastify status and collection API, loopback binding |
 | `packages/contracts` | Shared status types and versioned event validation |
-| `packages/tracker` | Standalone JavaScript bundle, currently inert |
+| `packages/tracker` | Opt-in standalone browser tracker; see [integration](TRACKER.md) |
 | `migrations` | Ordered PostgreSQL schema changes |
 | `scripts` | Local database lifecycle and migration runner |
 | `tests` | API/tracker behavior and real-database migration tests |
 
 Build artifacts, local database files, `.env`, and screenshots are ignored.
 Never copy MediaSpace credentials or production data into this repository.
+
+## Browser collection fixture
+
+Run `npm run dev:fixture` for an isolated static site, real collection API, and
+disposable PostgreSQL. See [tracker integration](TRACKER.md) for ports, consent
+controls, and cleanup. No persistent development fixture needs enabling.

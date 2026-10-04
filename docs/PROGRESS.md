@@ -4,12 +4,12 @@ This is the working record for Site Analytics. Read it before starting work and 
 
 ## Current position
 
-- **Phase:** Day 3 event storage implemented and locally verified.
-- **Completed work packages:** 2 of 15 (Days 2–3); Day 1 product confirmation remains partial.
-- **Current task:** Day 3 complete; Day 4 browser collection is next.
-- **Next action:** implement the standalone browser tracker with explicit consent hooks, sanitized data, sessions, and bounded batching.
+- **Phase:** Day 4 opt-in browser collection implemented and locally verified.
+- **Completed work packages:** 3 of 15 (Days 2–4); Day 1 product confirmation remains partial.
+- **Current task:** Day 4 complete; Day 5 prototype verification is next.
+- **Next action:** add SPA navigation, bounded retries/backoff, and exit delivery; verify the broader session and navigation matrix.
 - **Open decisions:** production traffic target, retention, session definition, reporting time zone, consent behavior, and authentication. Technical foundation choices are implemented in development.
-- **Delivery state:** proposal, daily plan, and tracker are on `main`; PR #1 merged September 29, 2026 at 17:33 UTC (merge commit `c91babd`). Day 1 design and Days 2–3 implementation are saved on `feat/development-workspace`; not merged or deployed.
+- **Delivery state:** proposal, daily plan, and tracker are on `main`; PR #1 merged September 29, 2026 at 17:33 UTC (merge commit `c91babd`). Day 1 design and Days 2–4 implementation are saved on `feat/development-workspace`; not merged or deployed.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
 
 ## Update steps for every completed task
@@ -32,7 +32,7 @@ The steps below summarize the detailed checklists in the daily plan.
 | [ ] | 1 | Product decisions | Confirm owner/sites/reports; set measurement and privacy defaults; choose tooling; sketch dashboard | [Draft decisions and sketch](DECISIONS.md); owner choices pending |
 | [x] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | [Day 2 verification](verification/day-2.md) |
 | [x] | 3 | Valid event storage | Define schema/tables; validate bounded batches; enforce project status and deduplicate events | [Day 3 verification](verification/day-3.md) |
-| [ ] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | Pending |
+| [x] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | [Day 4 verification](verification/day-4.md) |
 | [ ] | 5 | Verified prototype | Track SPA navigation; bound retries; test consent/exclusions/session behavior; confirm totals | Pending |
 | [ ] | 6 | Access and projects | Add owner login/logout; protect APIs; manage projects/origins/collection switches | Pending |
 | [ ] | 7 | Reporting API | Add project/date-scoped aggregates; define metric boundaries; verify fixture totals | Pending |
@@ -55,6 +55,13 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 | DEC-1 | Confirm Day 1 product and technical decisions | Drafted in [DECISIONS.md](DECISIONS.md); owner review pending | Record agreed choices and clearly labelled provisional assumptions |
 
 ## Completion history
+
+### October 4, 2026 — Day 4 opt-in browser collection
+
+- **Completed:** standalone tracker, consent start/stop, public path and campaign allowlists, sanitized referrer, anonymous sessions, bounded batching, and disposable static browser fixture.
+- **Verified:** lint, type checks, unit tests, and workspace builds; Chromium → real API → PostgreSQL demonstrated denied visits, allowed visits, withdrawal, excluded paths, and failure isolation.
+- **Evidence:** [Day 4 verification](verification/day-4.md), [tracker integration](TRACKER.md).
+- **Remaining:** Day 5 navigation/retries/exit delivery and broader verification; no push, merge, or production deployment.
 
 ### October 4, 2026 — Day 3 checkpoint review
 
@@ -133,13 +140,12 @@ For future entries, copy this structure and replace every placeholder:
 
 ## Next-session handoff
 
-Day 3 is implemented and verified locally on `feat/development-workspace`.
-Day 3 is saved in the October 4 checkpoint commit; not merged or deployed. See
-[setup](SETUP.md), [collection contract](COLLECTION.md), and
-[Day 3 verification](verification/day-3.md).
+Day 4 is implemented and locally verified on `feat/development-workspace`.
+See [Day 4 verification](verification/day-4.md) and [tracker integration](TRACKER.md).
+The disposable fixture enables only its temporary project; persistent development
+projects remain unchanged and no production collection is enabled.
 
-Next: Day 4 standalone browser tracker with explicit consent start/stop,
-sanitized page data, per-tab sessions, bounded batching, and a static test site.
-The tracker remains inert and development projects default to disabled.
-Run migrations then `npm run db:seed:dev` to provision local fixtures.
-Product defaults remain provisional; no production collection is authorized.
+Next: Day 5 automatic SPA route tracking, bounded retries/backoff, best-effort
+exit delivery, and verification of reload/back-forward/multi-tab/session expiry.
+Failed batches currently drop; the queue is bounded and memory-only. Product
+defaults remain provisional. Reporting and authentication are not implemented.

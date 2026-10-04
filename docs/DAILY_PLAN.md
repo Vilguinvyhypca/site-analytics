@@ -1,6 +1,6 @@
 # Daily delivery plan
 
-Status: Day 3 event storage implemented and locally verified. Day 1 product defaults remain provisional in [DECISIONS.md](DECISIONS.md). Next: Day 4 browser collection.
+Status: Day 4 opt-in browser collection implemented and locally verified. Day 1 product defaults remain provisional in [DECISIONS.md](DECISIONS.md). Next: Day 5 prototype verification.
 
 This plan implements the [proposal](PROPOSAL.md) using Angular, Node.js, PostgreSQL, and a standalone browser tracker. Start with a private, single-owner tool for multiple websites; confirm that assumption on Day 1. Session replay remains a separate future phase.
 
@@ -40,9 +40,9 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 
 ### Day 4 — Send events from a real browser
 
-- [ ] Build a framework-independent script that accepts a site ID and collection URL.
-- [ ] Add explicit start/stop consent hooks, sanitized page/referrer data, anonymous sessions, and bounded event batching.
-- [ ] Connect a small static test website; keep collection off until the test visitor permits it.
+- [x] Build a framework-independent script that accepts a site ID and collection URL.
+- [x] Add explicit start/stop consent hooks, sanitized page/referrer data, anonymous sessions, and bounded event batching.
+- [x] Connect a small static test website; keep collection off until the test visitor permits it.
 
 **Done when:** a permitted visit appears in PostgreSQL, a denied visit sends no analytics events, and a failed collection request does not break the page.
 

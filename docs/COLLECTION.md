@@ -43,4 +43,5 @@ only in a loopback database named `site_analytics_dev`:
 | `22222222-2222-4222-8222-222222222222` | Static fixture | `http://localhost:4300` |
 
 Seeding preserves existing settings. Tests enable fixtures only in disposable
-PostgreSQL. No browser tracker or production integration is activated here.
+PostgreSQL. The browser tracker is explicitly opt-in; see [tracker integration](TRACKER.md).
+No production integration is activated by seeding.
