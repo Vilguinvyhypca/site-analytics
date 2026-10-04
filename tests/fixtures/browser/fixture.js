@@ -12,3 +12,6 @@ document.querySelector('#visit').onclick = () => { state.textContent = tracker.p
 document.querySelector('#send').onclick = async () => { state.textContent = await tracker.flush() ? 'Visits received.' : 'Nothing sent or collector unavailable. The page still works.'; };
 let clicks = 0;
 document.querySelector('#counter').onclick = (event) => { event.target.textContent = `Try the page: ${++clicks}`; };
+
+document.querySelector('#spa').onclick = () => { history.pushState({}, '', '/gallery'); state.textContent = 'Gallery route opened.'; };
+document.querySelector('#back').onclick = () => history.back();

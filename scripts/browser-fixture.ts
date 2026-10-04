@@ -19,6 +19,15 @@ const pool = new pg.Pool({ connectionString: databaseUrl });
 pool.on('error', () => { if (!stopping) console.error('Fixture database connection unavailable.'); });
 const app = createApp(async () => { await pool.query('SELECT 1'); }, false, postgresCollector(pool));
 let failCollection = false;
+let loseNextResponse = false;
+const attempts: { ids: string[]; status: number; result: unknown }[] = [];
+app.addHook('onSend', async (request, reply, payload) => {
+  if (request.method !== 'POST' || !request.url.startsWith('/v1/collect/')) return payload;
+  const body = request.body as { events?: { id: string }[] } | undefined;
+  if (loseNextResponse && reply.statusCode === 202) { loseNextResponse = false; reply.code(503); }
+  attempts.push({ ids: body?.events?.map(event => event.id) ?? [], status: reply.statusCode, result: typeof payload === 'string' ? JSON.parse(payload) : null });
+  return payload;
+});
 app.addHook('onRequest', async (request, reply) => {
   if (request.method === 'POST' && failCollection) return reply.header('Access-Control-Allow-Origin', 'http://localhost:4302').code(503).send({ error: 'Simulated fixture outage' });
 });
@@ -31,6 +40,8 @@ const server = createServer(async (request, response) => {
     if (path.startsWith('/__test/')) {
       if (request.headers['sec-fetch-site'] === 'cross-site' || (request.headers.origin && request.headers.origin !== 'http://localhost:4302')) { response.writeHead(403).end(); return; }
       response.setHeader('Cache-Control', 'no-store');
+      if (path === '/__test/lost-response' && request.method === 'POST') { loseNextResponse = true; response.end('{}'); return; }
+      if (path === '/__test/attempts' && request.method === 'GET') { response.setHeader('Content-Type', 'application/json'); response.end(JSON.stringify(attempts)); return; }
       if (path === '/__test/failure' && request.method === 'POST') { failCollection = !failCollection; response.end(JSON.stringify({ failCollection })); return; }
       if (path === '/__test/events' && request.method === 'GET') {
         const rows = (await pool.query('SELECT id, session_id, name, path, properties FROM analytics.events ORDER BY received_at, id')).rows;

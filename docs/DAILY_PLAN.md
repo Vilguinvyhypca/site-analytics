@@ -1,6 +1,6 @@
 # Daily delivery plan
 
-Status: Day 4 opt-in browser collection implemented and locally verified. Day 1 product defaults remain provisional in [DECISIONS.md](DECISIONS.md). Next: Day 5 prototype verification.
+Status: Day 5 browser prototype implemented and locally verified. Day 1 product defaults remain provisional in [DECISIONS.md](DECISIONS.md). Next: Day 6 owner access and project controls.
 
 This plan implements the [proposal](PROPOSAL.md) using Angular, Node.js, PostgreSQL, and a standalone browser tracker. Start with a private, single-owner tool for multiple websites; confirm that assumption on Day 1. Session replay remains a separate future phase.
 
@@ -48,9 +48,9 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 
 ### Day 5 — Verify the prototype and revisit the estimate
 
-- [ ] Add client-side route-change tracking, bounded retry/backoff, and best-effort page-exit delivery.
-- [ ] Exercise reload, back/forward navigation, duplicate retries, session expiration, consent withdrawal, and excluded URLs.
-- [ ] Read back known totals with a development-only query or localhost-only endpoint; do not expose reporting publicly before authentication is ready.
+- [x] Add client-side route-change tracking, bounded retry/backoff, and best-effort page-exit delivery.
+- [x] Exercise reload, back/forward navigation, duplicate retries, session expiration, consent withdrawal, and excluded URLs.
+- [x] Read back known totals with a development-only query or localhost-only endpoint; do not expose reporting publicly before authentication is ready.
 
 **Done when:** browser → API → database → count is demonstrated against known expected results. Record actual effort and revise the remaining estimate if needed.
 

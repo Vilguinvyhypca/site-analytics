@@ -2,13 +2,13 @@
 
 A self-hosted analytics service in development for multiple websites, with an Angular dashboard, Node.js API, PostgreSQL database, and a small standalone JavaScript tracker.
 
-**Status:** Day 4 opt-in browser collection is implemented and locally verified against disposable PostgreSQL. The standalone tracker and static test site demonstrate consent-controlled page collection. Reporting and owner login remain unimplemented. See [tracker integration](docs/TRACKER.md) and the [collection contract](docs/COLLECTION.md).
+**Status:** Day 5 browser prototype is implemented and locally verified against disposable PostgreSQL. The standalone tracker and static test site demonstrate consent-controlled page collection, SPA navigation, bounded retries, and exit delivery. Reporting and owner login remain unimplemented. See [tracker integration](docs/TRACKER.md) and the [collection contract](docs/COLLECTION.md).
 
 See [local setup](docs/SETUP.md) for installation, startup, migration, and check commands.
 
 Read the [project proposal](docs/PROPOSAL.md) for scope, architecture, delivery milestones, estimates, and acceptance criteria.
 
-Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress. The next implementation task is Day 5: SPA navigation, bounded retries, exit delivery, and broader prototype verification.
+Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress. The next implementation task is Day 6: owner access and project controls.
 
 **Start each work session with the [progress tracker](docs/PROGRESS.md).** It lists remaining work, completed results, verification evidence, and the next action. Update it whenever a task is completed, in the same commit or PR as the work.
 

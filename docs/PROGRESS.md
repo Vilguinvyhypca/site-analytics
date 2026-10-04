@@ -4,12 +4,12 @@ This is the working record for Site Analytics. Read it before starting work and 
 
 ## Current position
 
-- **Phase:** Day 4 opt-in browser collection implemented and locally verified.
-- **Completed work packages:** 3 of 15 (Days 2–4); Day 1 product confirmation remains partial.
-- **Current task:** Day 4 complete; Day 5 prototype verification is next.
-- **Next action:** add SPA navigation, bounded retries/backoff, and exit delivery; verify the broader session and navigation matrix.
+- **Phase:** Day 5 browser prototype implemented and locally verified.
+- **Completed work packages:** 4 of 15 (Days 2–5); Day 1 product confirmation remains partial.
+- **Current task:** Day 5 complete; Day 6 owner access and project controls is next.
+- **Next action:** confirm owner login/recovery defaults, then implement authenticated access and project controls.
 - **Open decisions:** production traffic target, retention, session definition, reporting time zone, consent behavior, and authentication. Technical foundation choices are implemented in development.
-- **Delivery state:** proposal, daily plan, and tracker are on `main`; PR #1 merged September 29, 2026 at 17:33 UTC (merge commit `c91babd`). Day 1 design and Days 2–4 implementation are saved on `feat/development-workspace`; not merged or deployed.
+- **Delivery state:** proposal, daily plan, and tracker are on `main`; PR #1 merged September 29, 2026 at 17:33 UTC (merge commit `c91babd`). Day 1 design and Days 2–5 implementation are saved on `feat/development-workspace`; not merged or deployed.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
 
 ## Update steps for every completed task
@@ -33,7 +33,7 @@ The steps below summarize the detailed checklists in the daily plan.
 | [x] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | [Day 2 verification](verification/day-2.md) |
 | [x] | 3 | Valid event storage | Define schema/tables; validate bounded batches; enforce project status and deduplicate events | [Day 3 verification](verification/day-3.md) |
 | [x] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | [Day 4 verification](verification/day-4.md) |
-| [ ] | 5 | Verified prototype | Track SPA navigation; bound retries; test consent/exclusions/session behavior; confirm totals | Pending |
+| [x] | 5 | Verified prototype | Track SPA navigation; bound retries; test consent/exclusions/session behavior; confirm totals | [Day 5 verification](verification/day-5.md) |
 | [ ] | 6 | Access and projects | Add owner login/logout; protect APIs; manage projects/origins/collection switches | Pending |
 | [ ] | 7 | Reporting API | Add project/date-scoped aggregates; define metric boundaries; verify fixture totals | Pending |
 | [ ] | 8 | Angular reports | Connect selectors/cards/chart/tables; handle loading/empty/error states; check accessibility | Pending |
@@ -51,10 +51,18 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 
 | ID | Task or decision | Status | Completion condition |
 | --- | --- | --- | --- |
+| BROWSER-1 | Verify cloned/opener-tab session isolation and cross-browser BFCache/exit behavior | Day 11 follow-up; independent tabs verified | Record supported browser behavior and any session-clone handling |
 | PLAN-1 | Merge planning documentation into `main` | Verified merged; `c91babd` | Verify the daily plan, tracker, and README links exist on `main` after merge |
 | DEC-1 | Confirm Day 1 product and technical decisions | Drafted in [DECISIONS.md](DECISIONS.md); owner review pending | Record agreed choices and clearly labelled provisional assumptions |
 
 ## Completion history
+
+### October 4, 2026 — Day 5 browser prototype
+
+- **Completed:** automatic SPA navigation, bounded same-ID retries/backoff, keepalive exit delivery, session/consent edge checks, and exact-count database verification.
+- **Verified:** all 15 tests, lint, type checks, and builds passed. Chromium verified route sequences, lost-response deduplication, reload, separate tabs, expiry, withdrawal, and exit delivery against disposable PostgreSQL.
+- **Evidence:** [Day 5 verification](verification/day-5.md), [tracker integration](TRACKER.md).
+- **Remaining:** owner access/project controls next; cloned-tab and cross-browser matrix follow-ups documented; no push, merge, or production deployment.
 
 ### October 4, 2026 — Day 4 opt-in browser collection
 
@@ -140,12 +148,14 @@ For future entries, copy this structure and replace every placeholder:
 
 ## Next-session handoff
 
-Day 4 is implemented and locally verified on `feat/development-workspace`.
-See [Day 4 verification](verification/day-4.md) and [tracker integration](TRACKER.md).
-The disposable fixture enables only its temporary project; persistent development
-projects remain unchanged and no production collection is enabled.
+Day 5 is implemented and locally verified on `feat/development-workspace`.
+See [Day 5 verification](verification/day-5.md) and [tracker integration](TRACKER.md).
+All collection verification used a disposable project/database; production and
+persistent development collection settings are unchanged.
 
-Next: Day 5 automatic SPA route tracking, bounded retries/backoff, best-effort
-exit delivery, and verification of reload/back-forward/multi-tab/session expiry.
-Failed batches currently drop; the queue is bounded and memory-only. Product
-defaults remain provisional. Reporting and authentication are not implemented.
+Next: Day 6 owner login/logout, protected APIs, and project/origin controls.
+The proposed single-owner local account with server-side sessions and local
+recovery is still provisional in [DECISIONS.md](DECISIONS.md). Confirm the owner
+approach before implementing authentication. Reporting remains unimplemented.
+Remaining estimate: ten planned work packages plus unresolved Day 1 decisions;
+see Day 5 verification for prototype limits and browser follow-ups.

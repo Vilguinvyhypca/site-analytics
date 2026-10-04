@@ -31,12 +31,15 @@ from essential page functionality. Collection and network failures are contained
 - `start()` opts in, queues the current allowed page, and starts a two-second
   flush timer. Repeated starts do not add another visit or timer.
 - `page()` queues the current allowed page while enabled. It returns whether
-  a visit was queued. Automatic SPA route detection is Day 5 work.
-- `flush()` sends up to ten queued events and resolves to true only for HTTP
+  a visit was queued. While enabled, pushState/replaceState path changes and
+  popstate navigation are collected automatically; query/fragment-only changes
+  are ignored. Do not also call `page()` for the same automatic navigation.
+- `flush()` sends up to ten queued events eligible for delivery and resolves to true only for HTTP
   202 while still in the same consent generation. It never rejects for network
   failure. Timer flushes use the same path.
 - `stop()` disables collection, clears the queue/timer, aborts the current
-  request, and removes the session key. Already received events cannot be recalled.
+  request, restores owned history wrappers/removes navigation listeners, and
+  removes the session key. Already received events cannot be recalled.
 - `status()` on the instance reports enabled state and queue length. The
   top-level `SiteAnalytics.status()` describes the inert factory, not an instance.
 
@@ -62,15 +65,28 @@ Session IDs use browser `crypto.randomUUID()` and project-specific sessionStorag
 The ID rotates after 30 minutes without a queued event. Blocked storage falls
 back to memory. Session storage may be copied into an opener-created tab by the
 browser; strict new-tab isolation and the broader reload/navigation matrix need
-Day 5 verification. There is no cross-device identity. Tracking fails closed if
+the later browser matrix. Independent new tabs were verified separately in Day 5. There is no cross-device identity. Tracking fails closed if
 secure UUID generation is unavailable.
 
-The memory queue holds at most 100 events, dropping newer events when full.
-Each request contains at most ten bounded events, below the 32 KiB API limit.
-Only one request is active per instance; it times out after five seconds and
-omits credentials and the HTTP referrer. Failed batches are dropped in Day 4.
-There are no retries, persistent offline queues, or exit beacons yet; these are
-Day 5 work. Closing a page can lose unsent visits.
+The memory queue holds at most 100 events including the active batch, dropping
+newer events when full. Each request contains at most ten bounded events, below
+the 32 KiB API limit. Only one request is active per instance; it times out after
+five seconds and omits credentials and the HTTP referrer.
+
+Network failures/timeouts, HTTP 429, and server errors retry the same event IDs
+at most three total attempts. Delays are one then two seconds, checked by the
+two-second flush timer or an explicit flush. Retry-After seconds/dates are honored
+up to 30 seconds. Permanent errors (including 400/403/413) drop the batch. Events
+older than 23 hours 59 minutes or from a future local clock are dropped before
+batching. The server's project/event-ID key prevents duplicate storage when a
+successful response is lost. Withdrawal discards retries and late responses
+cannot resurrect a stopped session or interfere with a new one.
+
+Pagehide and transition to hidden trigger one bounded keepalive flush if no
+request is already active. This is best effort: browser shutdown, an active
+request, backoff, or more than ten queued events can leave unsent visits behind.
+There is no persistent offline queue or delivery guarantee. BFCache restoration
+records a fresh visible visit while the retained instance remains enabled.
 
 ## Disposable browser fixture
 
@@ -86,5 +102,7 @@ Navigation deliberately resets consent to off.
 
 The fixture alone exposes loopback test controls (not application API routes):
 `GET /__test/events` reads synthetic rows; `POST /__test/failure` toggles simulated
-503 responses to collection. These controls are never installed in the production
+503 responses to collection. `POST /__test/lost-response` makes the next successful
+insertion return 503 once; `GET /__test/attempts` exposes IDs/statuses/results to
+verify deduplication. The SPA button and Back button exercise route tracking. These controls are never installed in the production
 API. Only run the fixture locally with disposable test interactions.
