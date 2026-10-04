@@ -1,7 +1,7 @@
 # Development workspace
 
 Use Node.js 24.21.0 (see `.nvmrc`) and its bundled npm on Linux x64. This
-workspace is separate from MediaSpace. Collection is implemented but defaults to disabled; the browser tracker remains inert.
+workspace is separate from MediaSpace. Collection is implemented but defaults to disabled; the browser tracker requires explicit host consent; see [tracker setup](TRACKER.md).
 
 ```bash
 npm ci
@@ -25,10 +25,10 @@ npm run dev
 Open <http://127.0.0.1:4200>. The dashboard checks the API through its development
 proxy. The API health endpoint is <http://127.0.0.1:3100/api/health>. Both servers
 bind to loopback. The initial dashboard shows workspace status and planned reports;
-authentication, reports, browser tracking, and consent handling are later tasks.
+authentication and reports are later tasks. The tracker has a separate opt-in static test page.
 See [the collection guide](COLLECTION.md) to seed the two isolated development
 projects and opt in to local event storage.
-The tracker package is an inert scaffold, not an installable analytics integration.
+The tracker package builds to standalone JavaScript; use the [isolated test page](TRACKER.md) for verification.
 
 Stop the application and database with Ctrl+C in their respective terminals.
 Do not point `DATABASE_URL` at MediaSpace or production. Migration scripts use

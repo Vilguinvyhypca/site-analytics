@@ -1,6 +1,6 @@
 # Day 3 collection contract
 
-The collector is implemented and tested locally. Browser tracking and consent hooks are Day 4 work; the shipped tracker remains inert. Reporting, authentication, abuse rate limits, retention cleanup, and production deployment are later packages.
+The collector is implemented and tested locally. The [Day 4 tracker](TRACKER.md) implements consented browser page views and bounded batching. Reporting, authentication, abuse rate limits, retention cleanup, and production deployment are later packages.
 
 ## Enable isolated development collection
 

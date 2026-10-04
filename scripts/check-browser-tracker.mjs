@@ -1,0 +1,30 @@
+import { execFileSync } from 'node:child_process';
+import assert from 'node:assert/strict';
+import pg from 'pg';
+const browser = (...args) => execFileSync('node_modules/.bin/agent-browser', ['--session', 'analytics-day-four', ...args], { encoding: 'utf8' });
+const evaluate = code => browser('eval', code);
+const pool = new pg.Pool({ connectionString: 'postgresql://analytics_dev:local-development-only@127.0.0.1:55434/site_analytics_dev' });
+const count = async () => (await pool.query('SELECT count(*)::int AS count FROM events')).rows[0].count;
+try {
+  browser('--args', '--no-sandbox', 'open', 'http://127.0.0.1:4300');
+  const baseline = await count();
+  console.log(browser('snapshot', '-i'));
+  browser('screenshot', 'artifacts/day-four-consent.png');
+  evaluate("document.querySelector('#deny').click(); document.querySelector('#visit').click()");
+  await new Promise(resolve => setTimeout(resolve, 2200));
+  assert.equal(await count(), baseline, 'denied visit must not collect');
+  evaluate("document.querySelector('#allow').click(); document.querySelector('#send').click()");
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  assert.equal(await count(), baseline + 1, 'permitted browser visit reaches PostgreSQL');
+  const row = (await pool.query('SELECT payload FROM events')).rows[0].payload;
+  assert.equal(row.path, '/');
+  evaluate("document.querySelector('#visit').click(); document.querySelector('#deny').click(); document.querySelector('#send').click()");
+  await new Promise(resolve => setTimeout(resolve, 2200));
+  assert.equal(await count(), baseline + 1, 'withdrawal clears unsent visits');
+  assert.match(evaluate('sessionStorage.length'), /0/);
+  evaluate("window.failedTracker = SiteAnalytics.createTracker({projectId:'static-dev',collectionUrl:'http://127.0.0.1:3101/missing',publicPath:()=>'/'}); failedTracker.start()");
+  assert.match(evaluate('(async () => await failedTracker.flush())()'), /false/);
+  evaluate('failedTracker.stop()');
+  console.log(browser('errors'));
+  console.log('PASS: denied=0, permitted=1, withdrawal=1; failed collection caught; page remains interactive');
+} finally { await pool.end(); browser('close'); }

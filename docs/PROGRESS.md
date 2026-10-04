@@ -4,13 +4,14 @@ This is the working record for Site Analytics. Read it before starting work and 
 
 ## Current position
 
-- **Phase:** Days 1–3 complete locally; bounded event collection/storage verified.
-- **Completed work packages:** Days 1–3 of 15; two implementation packages completed.
-- **Current task:** Day 3 verified on `feat/day-three-collection`; not merged or deployed.
-- **Next action:** Day 4 — standalone browser tracker, consent hooks, sessions, sanitized URLs, and bounded batching.
+- **Phase:** Days 1–4 complete locally; consented browser → API → database delivery verified.
+- **Completed work packages:** Days 1–4 of 15; three implementation packages completed.
+- **Current task:** Day 4 verified on `feat/day-four-browser-tracker`; not merged or deployed.
+- **Next action:** Day 5 — navigation tracking, bounded retry/backoff, exit delivery and prototype verification.
 - **Confirmed reporting priority:** content performance, video engagement/watch time, and anonymous session activity; sharing actions included. See [content engagement requirements](CONTENT_ENGAGEMENT.md). Dashboard stays private initially.
 - **Provisional defaults:** traffic/retention/session/measurement values are recorded in the decisions document. Production domain, capacity, and activation requirements remain open with owners and deadlines.
 - **Delivery state:** PR #1 is merged. Day 1 follow-up documents and Day 2 implementation are present on `feat/day-two-workspace`; their merge and remote CI results have not been verified in this session.
+- **Day 4 delivery:** local implementation and browser verification complete; merge, remote CI and deployment unverified.
 - **Day 3 delivery:** implementation and verification are local on `feat/day-three-collection`; remote CI, merge and deployment remain unverified.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
 
@@ -27,14 +28,14 @@ Corrections should preserve the history: add a correction or reopening entry whe
 
 ## Remaining work overview
 
-Days 1–3 are complete locally; subsequent implementation rows remain pending. The steps below summarize the detailed checklists in the daily plan.
+Days 1–4 are complete locally; subsequent implementation rows remain pending. The steps below summarize the detailed checklists in the daily plan.
 
 | Complete | Day | Outcome | Steps | Completion evidence |
 | --- | --- | --- | --- | --- |
 | [x] | 1 | Product decisions | Scope and defaults recorded; tooling selected; outstanding decisions assigned; dashboard sketched | [Decisions](DAY_01_DECISIONS.md), [sketch](DASHBOARD_SKETCH.md) |
 | [x] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | [Setup](DEVELOPMENT.md), [API tests](../tests/health.test.ts), [database verification](../scripts/test-database.mjs) |
 | [x] | 3 | Valid event storage | Versioned contracts/tables; bounded batches; project/origin checks; event deduplication | [Collection guide](COLLECTION.md), [API/database tests](../tests/collection.test.ts) |
-| [ ] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | Pending |
+| [x] | 4 | Browser collection | Standalone script; consent/session/sanitization/batching; static test website | [Tracker guide](TRACKER.md), [tests](../tests/tracker.test.ts), browser/database assertions |
 | [ ] | 5 | Verified prototype | Track SPA navigation; bound retries; test consent/exclusions/session behavior; confirm totals | Pending |
 | [ ] | 6 | Access and projects | Add owner login/logout; protect APIs; manage projects/origins/collection switches | Pending |
 | [ ] | 7 | Reporting API | Add project/date-scoped aggregates; define metric boundaries; verify fixture totals | Pending |
@@ -55,6 +56,14 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 | --- | --- | --- | --- |
 | PLAN-1 | Merge planning documentation into `main` | Complete: PR #1 merged and files verified | Follow-up content requirements and Day 1 changes still need their own merge |
 | DEC-1 | Record Day 1 decisions | Complete design baseline | [Defaults and outstanding decisions](DAY_01_DECISIONS.md) are explicit; production values remain reviewable |
+
+### October 4, 2026 — Day 4 browser tracker verified
+
+- **Completed:** standalone tracker with explicit start/stop, project/tab sessions, 30-minute expiry, required public-path filter, hostname-only referrers, bounded queue/batches, request timeout and consent withdrawal; static opt-in test page and isolated browser harness.
+- **Verified:** `npm run check` passed lint, type checks, focused tests and all builds; `npm run test:db` passed real PostgreSQL regressions. Agent-browser/database assertions proved denial adds zero rows, permission adds one, withdrawal adds none and clears session storage, and a failed collector request is caught. Screenshot reviewed; no browser page errors reported.
+- **Evidence:** [tracker guide](TRACKER.md), [tracker tests](../tests/tracker.test.ts), [browser assertions](../scripts/check-browser-tracker.mjs); branch `feat/day-four-browser-tracker`. Bundle about 2.6 KiB.
+- **Remaining:** Day 5 navigation/retries/exit delivery and broader session/consent cases; Day 9 player measurements. No merge, remote CI or production deployment. Browser and socket checks required sandbox escalation.
+
 
 ## Completion history
 
@@ -128,10 +137,10 @@ For future entries, copy this structure and replace every placeholder:
 
 ## Next-session handoff
 
-**Start here:** Day 4 in the [daily plan](DAILY_PLAN.md), using the [collection contract/setup](COLLECTION.md) and [Day 1 decisions](DAY_01_DECISIONS.md).
+**Start here:** Day 5 in the [daily plan](DAILY_PLAN.md), using the [tracker guide](TRACKER.md).
 
-**First action:** implement the framework-independent tracker with explicit consent start/stop, project-scoped random session IDs, sanitized paths/referrer hosts, bounded batching, and an isolated static test page on port 4300. Keep admin/private-content exclusions and consent withdrawal requirements explicit.
+**First action:** add navigation tracking, bounded retry/backoff and best-effort exit delivery; verify reload/back-forward, duplicate retries, expiry, withdrawal and excluded URLs against known totals. Keep reporting private.
 
-**Expected output:** a permitted test visit creates expected PostgreSQL events, a denied visit sends none, and collection failures do not break the host page. Day 3 stores raw video snapshots without calculating watch totals; aggregation remains Day 9 work.
+**Expected output:** browser → API → database → count is demonstrated for controlled journeys; revisit remaining effort after the prototype. Player watch aggregation remains Day 9.
 
 **Runtime note:** use the pinned Node.js under `/home/seodev/.local/share/site-analytics-node`; run `export PATH=/home/seodev/.local/share/site-analytics-node/bin:$PATH` if needed. Collection requires `DATABASE_URL` plus explicit `COLLECTION_ENABLED=true`; the example stays false. `npm run db:seed` targets only the isolated localhost development database.

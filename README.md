@@ -44,8 +44,7 @@ in the Windows browser. The dashboard proxy handles API requests; no separate
 API tunnel is required. Ubuntu's local dashboard address is `http://127.0.0.1:4200`.
 
 The current dashboard shows workspace status and placeholders for content
-performance, video engagement, and session activity. Reports, owner login,
-and browser tracking are not implemented yet. The [collection guide](docs/COLLECTION.md)
+performance, video engagement, and session activity. Reports and owner login are not implemented yet. The [browser tracker](docs/TRACKER.md) is verified on an isolated opt-in test site. The [collection guide](docs/COLLECTION.md)
 describes the new opt-in development endpoint.
 
 ## Verification and next work
@@ -60,8 +59,7 @@ Day 3 work is on `feat/day-three-collection`, building on the locally verified
 Day 2 branch. Merge, remote CI, and deployment have not been verified.
 Production collection remains disabled.
 
-Next: Day 4 standalone browser tracking, explicit consent start/stop hooks,
-anonymous sessions, sanitized URLs and bounded batching. Tailscale dashboard
+Day 4 is locally verified on `feat/day-four-browser-tracker`: consented browser delivery, sessions, sanitized URLs and bounded batching. Next: Day 5 navigation tracking, retry/backoff, exit delivery and prototype verification. Tailscale dashboard
 access remains deferred. See the [progress tracker](docs/PROGRESS.md).
 
 ## Delivery target

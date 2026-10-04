@@ -13,7 +13,11 @@ export interface ShareEvent extends EventEnvelope { type: 'share'; contentId: st
 export type AnalyticsEvent = PageView | ContentEvent | PlaybackStart | PlaybackProgress | ShareEvent;
 export interface CollectionBatch { version: 1; projectId: string; events: AnalyticsEvent[] }
 export interface CollectionResponse { accepted: number; duplicates: number }
-export interface TrackerOptions { projectId: string; collectionUrl: string }
+export interface TrackerOptions {
+  projectId: string; collectionUrl: string;
+  /** Return a sanitized public path, or null to exclude the page. */
+  publicPath: (url: URL) => string | null;
+}
 
 const id = { type: 'string', minLength: 1, maxLength: 128, pattern: '^[A-Za-z0-9_-]+$' };
 const uuid = { type: 'string', format: 'uuid' };

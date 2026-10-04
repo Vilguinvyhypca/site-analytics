@@ -1,6 +1,6 @@
 # Daily delivery plan
 
-Status: Days 1–3 complete locally. Day 4 browser tracking is next. See [development setup](DEVELOPMENT.md), [decisions](DAY_01_DECISIONS.md), and [dashboard sketch](DASHBOARD_SKETCH.md).
+Status: Days 1–4 complete locally. Day 5 prototype verification is next. See [development setup](DEVELOPMENT.md), [decisions](DAY_01_DECISIONS.md), and [dashboard sketch](DASHBOARD_SKETCH.md).
 
 Scope update: prioritize the [content engagement requirements](CONTENT_ENGAGEMENT.md). Days 1–3 must include video measurement definitions/contracts, Days 4–5 include a player prototype, and Day 9 is split into 9A–9C below. Provisionally allow 2–4 additional working days and revisit the estimate after Day 5.
 
@@ -42,9 +42,9 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 
 ### Day 4 — Send events from a real browser
 
-- [ ] Build a framework-independent script that accepts a site ID and collection URL.
-- [ ] Add explicit start/stop consent hooks, sanitized page/referrer data, anonymous sessions, and bounded event batching.
-- [ ] Connect a small static test website; keep collection off until the test visitor permits it.
+- [x] Build a framework-independent script that accepts a site ID and collection URL.
+- [x] Add explicit start/stop consent hooks, sanitized page/referrer data, anonymous sessions, and bounded event batching.
+- [x] Connect a small static test website; keep collection off until the test visitor permits it.
 
 **Done when:** a permitted visit appears in PostgreSQL, a denied visit sends no analytics events, and a failed collection request does not break the page.
 
