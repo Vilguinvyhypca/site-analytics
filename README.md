@@ -2,13 +2,13 @@
 
 A self-hosted analytics service in development for multiple websites, with an Angular dashboard, Node.js API, PostgreSQL database, and a small standalone JavaScript tracker.
 
-**Status:** Day 2 development foundation implemented and locally verified. The Angular placeholder connects to a Fastify status API and isolated PostgreSQL. The tracker is an inert bundle; visitor collection, reporting, and owner login are not implemented.
+**Status:** Day 3 event storage implemented and locally verified. The API validates and stores bounded event batches in isolated PostgreSQL. Projects default to disabled. The browser tracker is still inert; reporting and owner login are not implemented. See the [collection contract](docs/COLLECTION.md).
 
 See [local setup](docs/SETUP.md) for installation, startup, migration, and check commands.
 
 Read the [project proposal](docs/PROPOSAL.md) for scope, architecture, delivery milestones, estimates, and acceptance criteria.
 
-Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress. The next implementation task is Day 3: validated event storage.
+Use the [daily delivery plan](docs/DAILY_PLAN.md) to choose the next small task, check what counts as done, and record progress. The next implementation task is Day 4: consent-controlled browser collection.
 
 **Start each work session with the [progress tracker](docs/PROGRESS.md).** It lists remaining work, completed results, verification evidence, and the next action. Update it whenever a task is completed, in the same commit or PR as the work.
 

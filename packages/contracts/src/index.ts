@@ -1,4 +1,4 @@
-/** Shared status contract. Event validation and ingestion are Day 3 work. */
+export * from './events.js';
 export const schemaVersion = 1;
 
 export interface HealthResponse {

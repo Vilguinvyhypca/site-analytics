@@ -1,6 +1,6 @@
 # Daily delivery plan
 
-Status: Day 2 foundation implemented and locally verified. Day 1 product defaults remain provisional in [DECISIONS.md](DECISIONS.md). Next: Day 3 event storage.
+Status: Day 3 event storage implemented and locally verified. Day 1 product defaults remain provisional in [DECISIONS.md](DECISIONS.md). Next: Day 4 browser collection.
 
 This plan implements the [proposal](PROPOSAL.md) using Angular, Node.js, PostgreSQL, and a standalone browser tracker. Start with a private, single-owner tool for multiple websites; confirm that assumption on Day 1. Session replay remains a separate future phase.
 
@@ -32,9 +32,9 @@ Use feature branches and small PRs. Keep each change runnable, include documenta
 
 ### Day 3 — Store a valid event
 
-- [ ] Define the first versioned event schema and project/event tables.
-- [ ] Add batch collection with schema, size, timestamp, and property limits; use parameterized database writes.
-- [ ] Seed two development projects and reject unknown/disabled projects. Define origin checks and deduplication boundaries.
+- [x] Define the first versioned event schema and project/event tables.
+- [x] Add batch collection with schema, size, timestamp, and property limits; use parameterized database writes.
+- [x] Seed two development projects and reject unknown/disabled projects. Define origin checks and deduplication boundaries.
 
 **Done when:** a valid test request creates the expected rows; malformed/oversized requests fail; replaying an event ID does not duplicate it within its project.
 

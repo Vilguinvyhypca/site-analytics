@@ -91,16 +91,15 @@ Add ordered files such as `002_events.sql` to `migrations/`. Do not edit an
 already applied migration: checksums detect that. All pending files and their
 ledger entries run in one transaction on one connection, with an advisory lock
 to serialize concurrent runs. There is no automatic destructive down-migration.
-The initial migration creates project configuration only; event schema and
-ingestion validation belong to Day 3.
+Migration 001 creates project configuration; 002 adds events. Run `npm run db:seed:dev` after migration to add two disabled local fixture projects. See [collection contract](COLLECTION.md).
 
 ## Workspace map
 
 | Directory | Responsibility |
 | --- | --- |
 | `apps/dashboard` | Angular dashboard and development API proxy |
-| `apps/api` | Fastify liveness/readiness API, loopback binding |
-| `packages/contracts` | Shared status types; event contracts follow in Day 3 |
+| `apps/api` | Fastify status and collection API, loopback binding |
+| `packages/contracts` | Shared status types and versioned event validation |
 | `packages/tracker` | Standalone JavaScript bundle, currently inert |
 | `migrations` | Ordered PostgreSQL schema changes |
 | `scripts` | Local database lifecycle and migration runner |

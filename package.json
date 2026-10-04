@@ -22,7 +22,8 @@
     "test": "node --import tsx --test tests/*.test.ts",
     "test:db": "node --import tsx --test tests/integration/*.test.ts",
     "test:db:local": "node --import tsx scripts/test-db.ts",
-    "check": "npm run lint && npm run typecheck && npm test && npm run build"
+    "check": "npm run lint && npm run typecheck && npm test && npm run build",
+    "db:seed:dev": "node --env-file-if-exists=.env --import tsx scripts/seed-dev.ts"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",

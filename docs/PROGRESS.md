@@ -4,12 +4,12 @@ This is the working record for Site Analytics. Read it before starting work and 
 
 ## Current position
 
-- **Phase:** Day 2 development foundation implemented and locally verified.
-- **Completed work packages:** 1 of 15 (Day 2); Day 1 product confirmation remains partial.
-- **Current task:** Day 2 complete; Day 3 event storage is next.
-- **Next action:** define the versioned event schema, bounded batch ingestion, two fixture projects, and deduplication.
+- **Phase:** Day 3 event storage implemented and locally verified.
+- **Completed work packages:** 2 of 15 (Days 2–3); Day 1 product confirmation remains partial.
+- **Current task:** Day 3 complete; Day 4 browser collection is next.
+- **Next action:** implement the standalone browser tracker with explicit consent hooks, sanitized data, sessions, and bounded batching.
 - **Open decisions:** production traffic target, retention, session definition, reporting time zone, consent behavior, and authentication. Technical foundation choices are implemented in development.
-- **Delivery state:** proposal, daily plan, and tracker are on `main`; PR #1 merged September 29, 2026 at 17:33 UTC (merge commit `c91babd`). Day 1 design and Day 2 implementation are on `feat/development-workspace`; not merged or deployed.
+- **Delivery state:** proposal, daily plan, and tracker are on `main`; PR #1 merged September 29, 2026 at 17:33 UTC (merge commit `c91babd`). Day 1 design and Days 2–3 implementation are saved on `feat/development-workspace`; not merged or deployed.
 - **Production:** no analytics service deployed and no tracking enabled by this project.
 
 ## Update steps for every completed task
@@ -31,7 +31,7 @@ The steps below summarize the detailed checklists in the daily plan.
 | --- | --- | --- | --- | --- |
 | [ ] | 1 | Product decisions | Confirm owner/sites/reports; set measurement and privacy defaults; choose tooling; sketch dashboard | [Draft decisions and sketch](DECISIONS.md); owner choices pending |
 | [x] | 2 | Runnable workspace | Scaffold Angular/API/tracker/contracts; initialize isolated PostgreSQL; add startup/checks/CI | [Day 2 verification](verification/day-2.md) |
-| [ ] | 3 | Valid event storage | Define schema/tables; validate bounded batches; enforce project status and deduplicate events | Pending |
+| [x] | 3 | Valid event storage | Define schema/tables; validate bounded batches; enforce project status and deduplicate events | [Day 3 verification](verification/day-3.md) |
 | [ ] | 4 | Browser collection | Build standalone script; add consent/session/sanitization/batching; connect test website | Pending |
 | [ ] | 5 | Verified prototype | Track SPA navigation; bound retries; test consent/exclusions/session behavior; confirm totals | Pending |
 | [ ] | 6 | Access and projects | Add owner login/logout; protect APIs; manage projects/origins/collection switches | Pending |
@@ -55,6 +55,19 @@ Days 16–25 are contingency/stabilization capacity, not automatically required 
 | DEC-1 | Confirm Day 1 product and technical decisions | Drafted in [DECISIONS.md](DECISIONS.md); owner review pending | Record agreed choices and clearly labelled provisional assumptions |
 
 ## Completion history
+
+### October 4, 2026 — Day 3 checkpoint review
+
+- **Completed:** reviewed and saved the pending Day 3 implementation, tests, and documentation in Git.
+- **Verified:** `npm run check` passed; `npm run test:db:local` passed both integration tests with disposable PostgreSQL outside the sandbox. Credential-pattern review found no candidate secrets in the changed files.
+- **Remaining:** Day 4 browser collection; no push, merge, production migration, or deployment performed.
+
+### September 29, 2026 — Day 3 event storage
+
+- **Completed:** versioned validation, bounded collection endpoint, origin checks, atomic parameterized insertion, project-scoped deduplication, and disabled development fixture seed command.
+- **Verified:** `npm run check` and `npm run test:db:local` passed, including concurrent retries and cross-project event IDs against disposable PostgreSQL.
+- **Evidence:** [Day 3 verification](verification/day-3.md), [contract](COLLECTION.md).
+- **Remaining:** local uncommitted changes on `feat/development-workspace`; no merge or deployment. Browser collection and reporting remain unimplemented.
 
 ### September 29, 2026 — Day 2 runnable development foundation
 
@@ -120,14 +133,13 @@ For future entries, copy this structure and replace every placeholder:
 
 ## Next-session handoff
 
-**Start here:** [local setup](SETUP.md) and [Day 2 verification](verification/day-2.md).
-The foundation is implemented on `feat/development-workspace`. No visitor events
-are accepted or collected. Dashboard defaults to loopback port 4201 because an
-existing unrelated development process already used 4200; API uses 4100 and
-local PostgreSQL uses 55432.
+Day 3 is implemented and verified locally on `feat/development-workspace`.
+Day 3 is saved in the October 4 checkpoint commit; not merged or deployed. See
+[setup](SETUP.md), [collection contract](COLLECTION.md), and
+[Day 3 verification](verification/day-3.md).
 
-**Next implementation:** Day 3 schema and bounded batch ingestion. Use the
-existing migration runner; add a new migration rather than changing 001.
-Seed two development projects and test project isolation and event-ID deduplication.
-Keep recording off by default. Confirm outstanding product defaults as needed
-without mistaking development scaffolding for production approval.
+Next: Day 4 standalone browser tracker with explicit consent start/stop,
+sanitized page data, per-tab sessions, bounded batching, and a static test site.
+The tracker remains inert and development projects default to disabled.
+Run migrations then `npm run db:seed:dev` to provision local fixtures.
+Product defaults remain provisional; no production collection is authorized.
