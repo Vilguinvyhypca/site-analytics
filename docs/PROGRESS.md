@@ -5,9 +5,9 @@ This is the working record for Site Analytics. Read it before starting work and 
 ## Current position
 
 - **Phase:** Days 1–4 complete locally; consented browser → API → database delivery verified.
-- **Completed work packages:** Days 1–4 of 15; three implementation packages completed.
-- **Current task:** Day 4 verified on `feat/day-four-browser-tracker`; not merged or deployed.
-- **Next action:** Day 5 — navigation tracking, bounded retry/backoff, exit delivery and prototype verification.
+- **Completed work packages:** Days 1–4 of 15; Day 5 implementation is in progress.
+- **Current task:** Day 5 implementation on `feat/day-five-tracker-reliability`; verification and completion criteria remain.
+- **Next action:** verify route changes, retries, consent withdrawal, expiry, and page exit delivery against database counts.
 - **Confirmed reporting priority:** content performance, video engagement/watch time, and anonymous session activity; sharing actions included. See [content engagement requirements](CONTENT_ENGAGEMENT.md). Dashboard stays private initially.
 - **Provisional defaults:** traffic/retention/session/measurement values are recorded in the decisions document. Production domain, capacity, and activation requirements remain open with owners and deadlines.
 - **Delivery state:** PR #1 is merged. Day 1 follow-up documents and Day 2 implementation are present on `feat/day-two-workspace`; their merge and remote CI results have not been verified in this session.
@@ -144,3 +144,10 @@ For future entries, copy this structure and replace every placeholder:
 **Expected output:** browser → API → database → count is demonstrated for controlled journeys; revisit remaining effort after the prototype. Player watch aggregation remains Day 9.
 
 **Runtime note:** use the pinned Node.js under `/home/seodev/.local/share/site-analytics-node`; run `export PATH=/home/seodev/.local/share/site-analytics-node/bin:$PATH` if needed. Collection requires `DATABASE_URL` plus explicit `COLLECTION_ENABLED=true`; the example stays false. `npm run db:seed` targets only the isolated localhost development database.
+
+### October 4, 2026 — Day 5 tracker reliability implementation started
+
+- **Completed:** added same-tab SPA route hooks for `pushState`, `replaceState`, back/forward and hash changes; route deduplication uses sanitized public paths. Added bounded exponential retries for network, 429 and 5xx responses, and a keepalive flush on hidden/page exit. Expanded static test-site navigation controls.
+- **Verified:** no automated or browser tests run in this continuation. The previous Day 4 database/browser verification remains recorded above; it does not cover these new behaviors.
+- **Evidence:** [tracker](../packages/tracker/src/index.ts), [Day 5 plan](DAILY_PLAN.md), [tracker guide](TRACKER.md), branch `feat/day-five-tracker-reliability`.
+- **Remaining:** check types/build and verify reload/back-forward, retry, duplicate route, expiry, withdrawal, excluded paths, page exit and known database totals before marking Day 5 complete.

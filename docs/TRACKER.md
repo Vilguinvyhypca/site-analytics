@@ -30,9 +30,17 @@ Consent itself is owned by the host and is not persisted by this package.
 
 The queue holds at most 100 events and drops newest overflow. Flush runs every
 two seconds with at most 50 events / 64 KiB UTF-8 per request; only one request is
-active at a time. Requests time out after five seconds. Failed batches are discarded
-in this milestone. Automatic navigation tracking, retry/backoff, page-exit delivery,
-and player measurement remain later work.
+active at a time. Requests time out after five seconds. Client-side navigation uses
+`pushState`, `replaceState`, back/forward and hash changes. It records a new page view
+only when the sanitized public path changes, so query-only changes do not duplicate
+views. Excluded paths reset route comparison and never create events.
+
+Network errors, HTTP 429 and server errors retry with exponential delays, capped at
+30 seconds and five automatic retries per failure streak. Other client errors are
+discarded as permanent. A later explicit `flush()` starts a new retry streak. When
+the document is hidden or exits, the tracker makes one best-effort keepalive request.
+The server may receive a request after the browser begins closing; delivery is not
+guaranteed. Player measurement remains later work.
 
 ## Reproduce the isolated browser check
 

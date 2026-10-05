@@ -11,15 +11,19 @@
 <button id="deny">Decline / stop analytics</button>
 <button id="visit">Record another public visit</button>
 <button id="send">Send queued visits</button>
+<button id="navigate">Navigate to another public route</button>
+<button id="back">Back</button>
 <script src="/tracker.js"></script>
 <script>
 const tracker = SiteAnalytics.createTracker({
   projectId: 'static-dev', collectionUrl: 'http://127.0.0.1:3101/api/collect',
-  publicPath: url => url.pathname === '/' ? '/' : null
+  publicPath: url => ['/', '/one', '/two'].includes(url.pathname) ? url.pathname : null
 });
 document.querySelector('#allow').onclick = () => { tracker.start(); document.querySelector('#status').textContent = 'Analytics on'; };
 document.querySelector('#deny').onclick = () => { tracker.stop(); document.querySelector('#status').textContent = 'Analytics off'; };
 document.querySelector('#visit').onclick = () => { tracker.pageView(); };
 document.querySelector('#send').onclick = async () => { const sent = await tracker.flush(); document.querySelector('#status').textContent = tracker.collectionEnabled ? (sent ? 'Analytics on — visits sent' : 'Analytics on — nothing sent') : 'Analytics off'; };
+document.querySelector('#navigate').onclick = () => { const next = location.pathname === '/one' ? '/two' : '/one'; history.pushState({}, '', next + '?token=private'); };
+document.querySelector('#back').onclick = () => history.back();
 </script>
 </html>
