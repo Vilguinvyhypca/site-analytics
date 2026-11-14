@@ -35,6 +35,15 @@ required libraries; installing those host packages was denied. The fixture and
 test are reproducible on a host with the relevant Playwright browsers and
 dependencies. This is not branded Safari coverage, nor a physical mobile test.
 
+## November 14 WebKit dependency diagnosis
+
+Read-only `ldd` inspection of the downloaded Playwright WebKitGTK runtime
+confirmed that this Linux environment is missing multiple shared libraries,
+including GTK 4, JavaScriptCoreGTK 6, libsoup 3, and GStreamer components. The
+browser binary is present, but cannot launch until system packages are installed.
+No system packages were changed. This diagnosis applies to the development
+machine and does not establish the browser capabilities of the Linux MacBook.
+
 ## Still open
 
 Day 11 remains open for the additional browser/device matrix and lifecycle cases
