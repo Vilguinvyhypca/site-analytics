@@ -26,10 +26,9 @@ are closed and the owner reviews the release candidate.
 1. Complete the desktop/mobile browser matrix. WebKit could not launch in the
    current Linux environment because system libraries are missing; this is not
    Safari verification. Physical mobile-device coverage is also open.
-2. Identify the staging MacBook's Linux distribution/version and CPU
-   architecture, select its system-wide Node 24.21.0 path, and create the
-   service account. Validate the actual unit and install it with administrator
-   access.
+2. Install system-wide Node 24.22.3 on the confirmed Ubuntu 24.04 x86_64
+   MacBook, create the service account, and validate/install the actual unit
+   with administrator access.
 3. Configure the staging PostgreSQL database, HTTPS/private access path and
    reverse proxy. Apply migrations, provision the owner, and complete the
    service restart, collection-disable, rollback, encrypted off-host backup and

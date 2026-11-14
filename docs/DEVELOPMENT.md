@@ -1,6 +1,6 @@
 # Development workspace
 
-Use Node.js 24.21.0 (see `.nvmrc`) and its bundled npm on Linux x64. This
+Use Node.js 24.22.3 (see `.nvmrc`) and its bundled npm on Linux x64. This
 workspace is separate from MediaSpace. Collection is implemented but defaults to disabled; the browser tracker requires explicit host consent; see [tracker setup](TRACKER.md).
 
 ```bash

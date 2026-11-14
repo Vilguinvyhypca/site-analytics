@@ -401,3 +401,10 @@ For future entries, copy this structure and replace every placeholder:
 - **Browser blocker diagnosis:** read-only dependency inspection confirmed the downloaded Playwright WebKitGTK binary lacks GTK 4, JavaScriptCoreGTK 6, libsoup 3, and GStreamer libraries on this development host. No system packages were changed; this says nothing about the separate MacBook's browser runtime.
 - **Install attempt:** Playwright's WebKit dependency installer was requested with approval, but the host rejected its `sudo` package-install step. No system packages were changed; WebKit remains unavailable here.
 - **Current revision:** MVP and staging preparation are committed locally as `422bfc4`, the proposal walkthrough as `ad0fb7f`, and the MediaSpace integration as `7396fe0` on its feature branch; no push, staging deployment, production database change, or live tracker activation occurred.
+
+### November 14, 2026 — Linux MacBook details confirmed and Node security update verified
+
+- **Host confirmed:** the separate staging MacBook reports Ubuntu 24.04 LTS, x86_64, systemd 255; Node.js is not installed. No commands have been run on that machine.
+- **Runtime update:** pinned this project to Node.js 24.22.3, updated the Linux staging unit and runbook to use the verified x64 runtime, and recorded the official archive SHA-256. The archive checksum was verified before installing a local development copy under `/home/seodev/.local/share`.
+- **Verification:** on Node 24.22.3, `npm run check` passed lint, type checks, 21 tests (8 database-only skips), and all workspace builds. `npm run test:db` passed all 15 tests, including migration checks, against disposable PostgreSQL. `git diff --check` passed.
+- **Next:** install the documented runtime and standard PostgreSQL on the Ubuntu MacBook, then complete private HTTPS access, backup/restore and service startup rehearsal. No files were copied to the MacBook and no staging service was started.

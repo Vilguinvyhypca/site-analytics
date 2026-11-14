@@ -1,12 +1,12 @@
 # Staging and recovery readiness
 
 This is a preparation checklist, not a deployment record. The owner selected a
-separate MacBook Pro running Linux as the staging host. Its Linux distribution
-and version, CPU architecture, network/reverse-proxy setup, process supervisor,
+separate MacBook Pro running Ubuntu 24.04 LTS on x86_64, with systemd 255, as
+the staging host. Node.js is not installed yet. Network/reverse-proxy setup,
 staging database, external backup destination, and uptime monitor are not
-configured or verified yet. Keep collection off until the owner approves a
-separate pilot. Do not point this service at MediaSpace or enable tracking on a
-live site as part of this rehearsal.
+configured or verified. Keep collection off until the owner approves a separate
+pilot. Do not point this service at MediaSpace or enable tracking on a live site
+as part of this rehearsal.
 
 ## Verified application behavior
 
@@ -92,9 +92,15 @@ and configure it to stay awake during the staging window.
 Install or prepare:
 
 - Git from the selected Linux distribution or the official Git project.
-- Node.js **24.21.0** and its bundled npm to match `.nvmrc`; install the build
-  for the Linux CPU architecture from the official
-  [Node.js download page](https://nodejs.org/en/download/).
+- Node.js **24.22.3** and its bundled npm to match `.nvmrc`. This is the
+  official security-patched x64 Linux release for this Ubuntu host. Download
+  [`node-v24.22.3-linux-x64.tar.xz`](https://nodejs.org/dist/v24.22.3/node-v24.22.3-linux-x64.tar.xz)
+  and verify SHA-256
+  `4f2b175a6d53a5c617a80dba2676238a0688cef28c6da4eba35c7d844e66fcfb`
+  against the signed
+  [Node.js release checksums](https://nodejs.org/en/blog/release/v24.22.3).
+  Extract to `/opt/node-v24.22.3-linux-x64` so the runtime is outside `/home`
+  and accessible with `ProtectHome=true`.
 - PostgreSQL **18** for version consistency with the project's database tests.
   Use the selected Linux distribution's supported package source. Bind
   PostgreSQL to loopback and use a dedicated staging database/role.
@@ -113,10 +119,10 @@ run on the staging host.
 
 [`site-analytics-staging.service.example`](../deploy/linux/site-analytics-staging.service.example)
 is a template, not an installed service. It runs at boot as the dedicated,
-unprivileged `siteanalytics` account and restarts on failure. Replace the Node
-binary path with a system-wide Node 24.21.0 install outside `/home` (the unit
-uses `ProtectHome=true`), and confirm the app build and database are accessible
-read-only to that account. Install the release files under `/opt/site-analytics`
+unprivileged `siteanalytics` account and restarts on failure. Install Node
+24.22.3 at `/opt/node-v24.22.3-linux-x64` as described above, and confirm the
+app build and database are accessible read-only to that account. Install the
+release files under `/opt/site-analytics`
 owned by root and readable by the service group; keep runtime-writable data
 outside the release tree. Create `/etc/site-analytics/staging.env` with
 `COLLECTION_ENABLED=false`, the absolute `DASHBOARD_DIR`, `DATABASE_URL`,
@@ -126,12 +132,13 @@ launching the service.
 
 Installing the unit requires administrator access to create the service account,
 install the file under `/etc/systemd/system`, and set root ownership/mode. Copy
-the example into the deployment workspace, replace its Node path, then validate
-that reviewed copy before installing it. For example, from the repository root:
+the example into the deployment workspace, review the paths, then validate the
+copy before installing it. For example, from the repository root:
 
 ```bash
 cp deploy/linux/site-analytics-staging.service.example /tmp/site-analytics-staging.service
 ${EDITOR:-vi} /tmp/site-analytics-staging.service
+sudo useradd --system --user-group --home-dir /nonexistent --shell /usr/sbin/nologin siteanalytics
 systemd-analyze verify /tmp/site-analytics-staging.service
 sudo install -d -o root -g root -m 0755 /etc/site-analytics
 sudoedit /etc/site-analytics/staging.env
@@ -168,8 +175,10 @@ and environment file out of shared logs or screenshots. If health or readiness
 fails, inspect the service status and journal, correct the configuration, and
 repeat the local checks before adding HTTPS or remote access.
 
-These commands have not been run on the staging Linux laptop. Its distribution,
-architecture and administrator/service-account setup are still unknown.
+These commands have not been run on the staging Linux laptop. Its Ubuntu 24.04
+x86_64 distribution, systemd 255, and absence of Node.js are confirmed; the
+administrator account, service-account creation, database installation, and
+network/access setup still need to be completed there.
 
 Install current Linux security updates, enable the firewall, use the dedicated
 non-admin service account for the app, and keep staging secrets out of the
