@@ -392,3 +392,9 @@ For future entries, copy this structure and replace every placeholder:
 - **Engagement acceptance:** added and passed a two-player native adapter regression proving playback IDs stay separate and switching to a second content item advances only its coverage. Marked the remaining overlay/feed/concurrent-playback requirement complete using the existing isolated MediaSpace browser evidence plus this test.
 - **Release review:** added [release-readiness record](RELEASE_READINESS.md) and corrected the proposal status. It records the project as locally verified but not production-ready while Day 11 browser coverage and Day 14 host/recovery work remain open.
 - **Status:** commands are documentation only and have not been run on the MacBook. Host distro/architecture, service account, actual Node path, database setup, HTTPS access, and backup destination remain unconfirmed. No staging service or external system was changed.
+
+### November 14, 2026 — Proposal acceptance walkthrough
+
+- **Review:** mapped all eleven release acceptance criteria from the proposal to current tests, browser journeys, database checks, or staging documentation. Marked the Day 15 evidence walkthrough complete.
+- **Clarified blockers:** recorded that physical browser coverage, Linux staging installation/recovery, external monitoring, production capacity limits, and the MediaSpace legacy-report reconciliation still prevent production readiness.
+- **Current revision:** the previous work is committed locally as `422bfc4`; no push, staging deployment, production database change, or live tracker activation occurred.

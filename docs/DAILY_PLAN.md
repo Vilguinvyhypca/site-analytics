@@ -161,7 +161,7 @@ The owner selected a MacBook Pro running Linux as the staging host. Still needed
 
 Current evidence and open release blockers are summarized in the [release-readiness record](RELEASE_READINESS.md). It is not a production approval.
 
-- [ ] Walk through every acceptance criterion in the proposal and link the evidence.
+- [x] Walk through each of the proposal's release acceptance criteria and link the evidence in the release-readiness record.
 - [ ] Fix release-blocking issues and record known limitations and operating capacity.
 - [ ] Prepare the exact production configuration, migration steps, and rollout/rollback plan for review.
 

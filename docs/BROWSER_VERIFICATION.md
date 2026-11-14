@@ -37,7 +37,14 @@ dependencies. This is not branded Safari coverage, nor a physical mobile test.
 
 ## Still open
 
-Day 11 remains open for the additional browser/device matrix and lifecycle cases not represented above, including tab-duplication/sessionStorage-copy behavior and application-specific cache-restoration behavior. Actual Safari media/autoplay restrictions cannot be inferred from Chromium viewport resizing. The absence of observed errors in a synthetic journey does not establish overall reliability.
+Day 11 remains open for the additional browser/device matrix and lifecycle cases
+not represented above. An opener-created same-origin tab correctly receives a
+new session after its initial sessionStorage copy, but browser-menu duplication
+without an accessible opener remains unverified. Standalone persisted-page
+restoration passed; application-specific cache eligibility on MediaSpace remains
+unverified. Actual Safari media/autoplay restrictions cannot be inferred from
+Chromium viewport resizing. The absence of observed errors in a synthetic
+journey does not establish overall reliability.
 
 Production rollout additionally needs the legacy report migration decision: historical Experience reports, source attribution and document-load metrics are not silently merged with the new collector's data. See the reconciliation guide in the MediaSpace development checkout. Nothing in these tests authorizes production collection or deployment.
 

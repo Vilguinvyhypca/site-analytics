@@ -5,18 +5,21 @@ complete. This is a readiness record, not an approval to deploy. The project is
 not ready for production rollout until the open browser and staging items below
 are closed and the owner reviews the release candidate.
 
-## Acceptance evidence
+## Proposal acceptance walkthrough
 
-| Area | Status | Evidence |
+| Proposal acceptance criterion | Status | Evidence |
 | --- | --- | --- |
-| Consent-aware tracker, bounded collection, sanitization and retries | Verified locally | [Tracker contract](TRACKER.md), `tests/tracker.test.ts`, `tests/collection.test.ts` |
-| Owner login, project isolation and collection controls | Verified locally | [Owner access](OWNER_ACCESS.md), `tests/admin.test.ts`, `scripts/check-owner-dashboard.mjs` |
-| Traffic and engagement reports | Verified locally | [Reporting](REPORTING.md), [engagement reports](ENGAGEMENT_REPORTS.md), database suite |
-| Native playback, sharing, overlays and feed scrolling | Verified with synthetic browser/database journeys | [Native video](NATIVE_VIDEO.md), [content actions](CONTENT_ACTIONS.md), [progress evidence](PROGRESS.md), `tests/native-video.test.ts` |
-| Retention, project deletion, backup/restore helper and query index | Verified locally | [Daily plan](DAILY_PLAN.md), `scripts/check-backup-restore.mjs`, database suite |
-| Small-pilot limits and overload response | Verified locally; capacity ceiling is not a production guarantee | [Daily plan](DAILY_PLAN.md), [progress measurements](PROGRESS.md) |
-| Browser/device compatibility | Partial | [Browser verification matrix](BROWSER_VERIFICATION.md) |
-| Linux boot-time service, HTTPS and operational recovery | Documented, not installed or rehearsed | [Staging and recovery](STAGING_RECOVERY.md), [systemd template](../deploy/linux/site-analytics-staging.service.example) |
+| Two websites collect into separate projects with no report leakage | Verified locally with synthetic projects | [Browser journey](BROWSER_VERIFICATION.md), `scripts/check-mediaspace.mjs`, database suite |
+| Direct views, client-side navigation, and retry deduplication | Verified locally | [Tracker contract](TRACKER.md), `tests/tracker.test.ts`, browser journey |
+| Selected clicks, media overlays, document/feed scrolling | Verified with synthetic browser/database journeys | [Content actions](CONTENT_ACTIONS.md), [pilot evidence](PROGRESS.md), `scripts/check-mediaspace.mjs` |
+| Consent denial/withdrawal, protected-content exclusion, URL privacy | Verified locally with synthetic sentinels | [Browser verification](BROWSER_VERIFICATION.md), `tests/tracker.test.ts`, `tests/native-video.test.ts` |
+| Malformed, oversized and excessive requests are bounded/rejected | Verified locally | `tests/collection.test.ts`, collector tests in database suite |
+| Dashboard totals match fixtures and timezone boundaries | Verified locally | [Reporting](REPORTING.md), [engagement reports](ENGAGEMENT_REPORTS.md), database suite |
+| Tracker failure does not block the host site or grow unbounded queues | Verified locally | `tests/tracker.test.ts` |
+| Owner authentication protects reporting and administration | Verified locally | [Owner access](OWNER_ACCESS.md), `tests/admin.test.ts`, `scripts/check-owner-dashboard.mjs` |
+| Retention and isolated backup restoration | Verified locally; operational backup remains open | `tests/retention.test.ts`, `scripts/check-backup-restore.mjs`, [staging recovery](STAGING_RECOVERY.md) |
+| Deployment, rollback, health, logs and disable procedures | Documented; not rehearsed on staging | [Staging and recovery](STAGING_RECOVERY.md), [systemd template](../deploy/linux/site-analytics-staging.service.example) |
+| Defined desktop/mobile browser matrix and agreed performance targets | Partial; no final production ceiling agreed | [Browser verification](BROWSER_VERIFICATION.md), [measured pilot notes](PROGRESS.md) |
 
 ## Open release blockers
 
@@ -34,7 +37,10 @@ are closed and the owner reviews the release candidate.
 4. Set an independent service owner, alert destination and external uptime
    monitor. Verify the actual public routing and alert path from outside the
    host.
-5. Revisit the measured operating ceiling on the actual staging hardware before
+5. Resolve the MediaSpace legacy analytics report migration before live
+   activation. Keep historical Experience counts, attribution, and new tracker
+   metrics distinct until a reviewed migration/reconciliation plan is applied.
+6. Revisit the measured operating ceiling on the actual staging hardware before
    any production expansion. Current rate/concurrency limits are per process;
    they do not establish multi-process capacity or cap the number of visitors.
 
@@ -48,8 +54,9 @@ are closed and the owner reviews the release candidate.
   remains deferred; the Mux prototype is not a release dependency.
 - Session replay, billing/load-triggered fees, public signup and multi-instance
   scale are outside the first release.
-- All repository changes remain local and uncommitted. No staging service,
-  production service, production database or live-site tracker was changed.
+- Repository changes remain local; no staging service, production service,
+  production database or live-site tracker was changed. No deployment is
+  authorized by this readiness review.
 
 ## Decision
 
