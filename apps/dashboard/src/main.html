@@ -1,0 +1,37 @@
+<main>
+  <header><span class="eyebrow">PRIVATE WORKSPACE</span><h1>Site Analytics</h1><p>Understand the journey from discovery to engagement.</p></header>
+  <section aria-labelledby="status-heading"><h2 id="status-heading">Workspace status</h2><p role="status">{{ status() }}</p><button (click)="checkHealth()" [disabled]="checking()">Check connection</button></section>
+  <p role="status" aria-live="polite">{{ message() }}</p>
+  @if (!ready()) {
+    <section><h2>Owner access</h2><p>Owner access is unavailable. Check the API setup and retry.</p><button (click)="refreshSession()">Retry owner access</button></section>
+  } @else if (!authenticated()) {
+    <section aria-labelledby="login-heading"><h2 id="login-heading">Owner sign in</h2>
+      <form (submit)="login($event, password)"><label for="password">Password</label><input #password id="password" type="password" autocomplete="current-password" required maxlength="1024"><button type="submit" [disabled]="busy()">Sign in</button></form>
+    </section>
+  } @else {
+    <div class="toolbar"><h2>Projects</h2><button (click)="logout()" [disabled]="busy()">Sign out</button></div>
+    <traffic-report [projects]="projects()" (sessionExpired)="reportSessionExpired()" />
+    <div class="project-layout">
+      <section aria-label="Project list"><button (click)="choose(null)" [disabled]="busy()">New project</button>
+        @for (project of projects(); track project.id) {
+          <button class="project" (click)="choose(project)" [disabled]="busy()" [attr.aria-pressed]="selected()?.id === project.id"><strong>{{ project.name }}</strong><span>{{ project.id }} · {{ project.collectionEnabled ? 'Enabled' : 'Disabled' }}</span></button>
+        } @empty { <p>No projects yet. Create your first website project.</p> }
+      </section>
+      <section aria-labelledby="edit-heading"><h2 id="edit-heading">{{ selected() ? 'Edit project' : 'Create project' }}</h2>
+        <form id="project-form" (submit)="saveProject($event, projectId.value, projectName.value, origins.value, enabled.checked)">
+          <label for="project-id">Project ID</label><input #projectId id="project-id" [value]="selected()?.id || ''" [readOnly]="!!selected()" required pattern="[A-Za-z0-9_-]{1,128}" maxlength="128" aria-describedby="id-hint"><small id="id-hint">Letters, numbers, hyphens and underscores. Cannot change after creation.</small>
+          <label for="project-name">Website name</label><input #projectName id="project-name" [value]="selected()?.name || ''" required maxlength="120">
+          <label for="origins">Allowed website origins</label><textarea #origins id="origins" [value]="selected()?.allowedOrigins?.join('\n') || ''" required rows="3" aria-describedby="origin-hint"></textarea><small id="origin-hint">One exact origin per line, such as https://example.com. Include development ports; omit paths.</small>
+          <label class="checkbox"><input #enabled type="checkbox" [checked]="selected()?.collectionEnabled || false">Allow collection for this project</label>
+          <p class="hint">The collection service must also be enabled. Visitors still need to give consent.</p>
+          <button type="submit" [disabled]="busy()">{{ busy() ? 'Working…' : 'Save project' }}</button>
+        </form>
+      </section>
+    </div>
+    @if (selected()) {
+      <section aria-labelledby="delete-project-heading"><h2 id="delete-project-heading">Delete project and analytics data</h2><p>This permanently deletes this project and all retained events. This cannot be undone.</p><label for="delete-confirmation">Type {{ selected()?.id }} to confirm</label><input id="delete-confirmation" [value]="deleteConfirmation()" (input)="deleteConfirmation.set($any($event.target).value)" autocomplete="off"><button type="button" class="danger" (click)="deleteSelected()" [disabled]="busy()">Delete project data</button></section>
+      <section><h2>Install on {{ selected()?.name }}</h2><p>This starter snippet tracks only the homepage after your consent control calls start. Add only approved public paths. Use the analytics service’s reachable HTTPS address when deploying.</p><button (click)="copySnippet()">Copy snippet</button><label for="snippet">Installation snippet</label><textarea id="snippet" readonly rows="13" [value]="snippet()"></textarea></section>
+    }
+    <footer>Reports show observed, consented activity. Missing events can undercount engagement.</footer>
+  }
+</main>

@@ -1,0 +1,47 @@
+<section aria-labelledby="traffic-heading" class="traffic">
+  <h2 id="traffic-heading">Traffic reports</h2>
+  <p>Explore observed page views and anonymous sessions for one website.</p>
+  @if (projects().length === 0) {
+    <p>Create a project below to start viewing reports.</p>
+  } @else {
+    <form id="report-filters" (submit)="load($event)">
+      <div class="report-filters">
+        <div><label for="report-project">Website</label><select id="report-project" required [value]="projectId()" (change)="change('projectId', $any($event.target).value)"><option value="">Choose a project</option>@for (project of projects(); track project.id) {<option [value]="project.id">{{ project.name }}</option>}</select></div>
+        <div><label for="report-start">Start date</label><input id="report-start" type="date" required min="2000-01-01" max="9998-12-31" [value]="startDate()" (input)="change('startDate', $any($event.target).value)"></div>
+        <div><label for="report-end">End date</label><input id="report-end" type="date" required min="2000-01-01" max="9998-12-31" [value]="endDate()" (input)="change('endDate', $any($event.target).value)"></div>
+        <div><label for="report-zone">Time zone</label><select id="report-zone" [value]="timeZone()" (change)="change('timeZone', $any($event.target).value)"><option value="America/New_York">America/New_York</option><option value="UTC">UTC</option></select></div>
+      </div>
+      <p class="hint">Both dates are included. Maximum 366 days.</p>
+      <button type="submit" [disabled]="loading()">{{ loading() ? 'Loading report…' : 'Show report' }}</button>
+    </form>
+    <div aria-live="polite" role="status">@if (loading()) {<p>Loading report…</p>} @else if (!report() && !error()) {<p>Choose your filters, then show the report.</p>}</div>
+    @if (error()) {<div class="report-error" role="alert"><p>{{ error() }}</p><button type="button" (click)="load()">Retry report</button></div>}
+    @if (report(); as data) {
+      <div id="report-result">
+        <h3>{{ projectName() }}</h3>
+        <p>{{ data.startDate }} – {{ data.endDate }} · {{ data.timeZone }}</p>
+        <div class="summary-cards">
+          <div><h3>Page views</h3><strong id="page-view-total">{{ data.totals.pageViews }}</strong></div>
+          <div><h3>Sessions</h3><strong id="session-total">{{ data.totals.sessions }}</strong></div>
+        </div>
+        <p class="hint">Sessions with a page view in this range. These are anonymous sessions, not unique people. Sessions can appear on more than one day or in multiple table rows.</p>
+        @if (data.totals.pageViews === 0) {<p class="empty-report" role="status">No page views recorded for this website and date range.</p>} @else {
+          <h3>Daily page views</h3>
+          <figure class="trend">
+            <svg viewBox="0 0 600 170" role="img" aria-labelledby="trend-title trend-desc"><title id="trend-title">Daily page views</title><desc id="trend-desc">Peak {{ peak() }} page views per day. Exact dates, page views and session counts are in the daily totals table below.</desc><line x1="10" y1="150" x2="590" y2="150" stroke="currentColor"/><polyline [attr.points]="points()" fill="none" stroke="#185942" stroke-width="3"/>
+              @if (data.daily.length === 1) {<circle cx="300" cy="20" r="5" fill="#185942"/>}
+            </svg>
+            <figcaption><span>{{ data.startDate }}</span><span>Peak: {{ peak() }}</span><span>{{ data.endDate }}</span></figcaption>
+          </figure>
+        }
+        <details><summary>Daily totals ({{ data.timeZone }})</summary><div class="table-scroll"><table id="daily-table"><caption>Page views and active sessions by day</caption><thead><tr><th scope="col">Date</th><th scope="col">Page views</th><th scope="col">Sessions</th></tr></thead><tbody>@for (day of data.daily; track day.date) {<tr><th scope="row">{{ day.date }}</th><td>{{ day.pageViews }}</td><td>{{ day.sessions }}</td></tr>}</tbody></table></div></details>
+        <div class="report-tables">
+          <div><h3>Popular pages</h3>@if (data.pageGroups > data.groupLimit) {<p>Showing top {{ data.groupLimit }} of {{ data.pageGroups }} pages. Totals include all pages.</p>}<table id="pages-table"><caption>Page views and sessions by path</caption><thead><tr><th scope="col">Path</th><th scope="col">Views</th><th scope="col">Sessions</th></tr></thead><tbody>@for (page of data.pages; track page.path) {<tr><th scope="row">{{ page.path }}</th><td>{{ page.pageViews }}</td><td>{{ page.sessions }}</td></tr>} @empty {<tr><td colspan="3">No pages recorded.</td></tr>}</tbody></table></div>
+          <div><h3>Referrers</h3><p class="hint">Hostname on each page view. Missing referrers are Unknown.</p>@if (data.referrerGroups > data.groupLimit) {<p>Showing top {{ data.groupLimit }} of {{ data.referrerGroups }} referrers. Totals include all referrers.</p>}<table id="referrers-table"><caption>Page views and sessions by referrer</caption><thead><tr><th scope="col">Hostname</th><th scope="col">Views</th><th scope="col">Sessions</th></tr></thead><tbody>@for (referrer of data.referrers; track referrer.host) {<tr><th scope="row">{{ referrer.label }}</th><td>{{ referrer.pageViews }}</td><td>{{ referrer.sessions }}</td></tr>} @empty {<tr><td colspan="3">No referrers recorded.</td></tr>}</tbody></table></div>
+        </div>
+        <p class="hint">Report generated {{ formatTime(data.generatedAt, data.timeZone) }} ({{ data.timeZone }}). @if (data.latestReceivedAt) {Latest matching page view received {{ formatTime(data.latestReceivedAt, data.timeZone) }}.} @else {No matching page views received.} Late events appear when you refresh the report.</p>
+        <engagement-report [query]="data" (sessionExpired)="sessionExpired.emit()" />
+      </div>
+    }
+  }
+</section>

@@ -2,7 +2,9 @@
 
 Date: September 29, 2026
 
-Status: proposed; implementation has not started
+Status: core MVP implementation and local verification are substantially
+complete. Browser/device coverage and staging/recovery remain open; no staging or
+production deployment has occurred. See the [release-readiness record](RELEASE_READINESS.md).
 
 Working name: Site Analytics
 

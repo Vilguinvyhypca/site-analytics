@@ -3,7 +3,8 @@ import { readdir, readFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import pg from 'pg';
 export const developmentUrl = 'postgresql://analytics_dev:local-development-only@127.0.0.1:55432/site_analytics_dev';
-export async function migrate(connectionString = process.env.DATABASE_URL ?? developmentUrl) {
+export async function migrate(connectionString = process.env.DATABASE_URL) {
+  if (!connectionString) throw new Error('Set DATABASE_URL for the intended database; migrations do not choose a default database');
   const client = new pg.Client({ connectionString, connectionTimeoutMillis: 5000 });
   await client.connect();
   try {

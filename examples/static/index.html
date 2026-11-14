@@ -3,10 +3,11 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Analytics consent test</title>
-<style>body{font:18px system-ui;max-width:680px;margin:64px auto;padding:24px;line-height:1.6}button{font:inherit;padding:10px;margin:4px}#status{font-weight:bold}</style>
+<style>body{font:18px system-ui;max-width:680px;margin:64px auto;padding:24px;line-height:1.6}button{font:inherit;padding:10px;margin:4px}button:disabled{opacity:.5;cursor:wait}#status{font-weight:bold}.notice{padding:14px 18px;border:1px solid;border-radius:6px}.notice.waiting{background:#fff0f0;border-color:#b42318;color:#8a1c13}.notice.ready{background:#edf9f0;border-color:#287d3c;color:#195c2a}</style>
 <h1>Analytics consent test</h1>
 <p>This local test site sends anonymous page visits only after you allow analytics. Your choice is not saved across reloads.</p>
 <p id="status" role="status">Analytics off</p>
+<p id="notice" class="notice" role="status" aria-live="polite" aria-atomic="true" hidden></p>
 <button id="allow">Allow analytics</button>
 <button id="deny">Decline / stop analytics</button>
 <button id="visit">Record another public visit</button>
@@ -19,8 +20,30 @@ const tracker = SiteAnalytics.createTracker({
   projectId: 'static-dev', collectionUrl: 'http://127.0.0.1:3101/api/collect',
   publicPath: url => ['/', '/one', '/two'].includes(url.pathname) ? url.pathname : null
 });
-document.querySelector('#allow').onclick = () => { tracker.start(); document.querySelector('#status').textContent = 'Analytics on'; };
-document.querySelector('#deny').onclick = () => { tracker.stop(); document.querySelector('#status').textContent = 'Analytics off'; };
+const notice = document.querySelector('#notice');
+const buttons = document.querySelectorAll('button');
+let countdown;
+function waitForCollection() {
+  clearInterval(countdown);
+  const deadline = performance.now() + 3000;
+  buttons.forEach(button => { button.disabled = true; });
+  notice.hidden = false;
+  notice.className = 'notice waiting';
+  notice.textContent = 'Please wait 3 seconds before continuing.';
+  countdown = setInterval(() => {
+    const remaining = Math.max(0, Math.ceil((deadline - performance.now()) / 1000));
+    if (remaining > 0) {
+      notice.textContent = `Please wait ${remaining} ${remaining === 1 ? 'second' : 'seconds'} before continuing.`;
+      return;
+    }
+    clearInterval(countdown);
+    buttons.forEach(button => { button.disabled = false; });
+    notice.className = 'notice ready';
+    notice.textContent = 'You can continue. The waiting period is complete; event delivery still needs verification.';
+  }, 100);
+}
+document.querySelector('#allow').onclick = () => { tracker.start(); document.querySelector('#status').textContent = 'Analytics on'; waitForCollection(); };
+document.querySelector('#deny').onclick = () => { tracker.stop(); document.querySelector('#status').textContent = 'Analytics off'; notice.hidden = true; };
 document.querySelector('#visit').onclick = () => { tracker.pageView(); };
 document.querySelector('#send').onclick = async () => { const sent = await tracker.flush(); document.querySelector('#status').textContent = tracker.collectionEnabled ? (sent ? 'Analytics on — visits sent' : 'Analytics on — nothing sent') : 'Analytics off'; };
 document.querySelector('#navigate').onclick = () => { const next = location.pathname === '/one' ? '/two' : '/one'; history.pushState({}, '', next + '?token=private'); };

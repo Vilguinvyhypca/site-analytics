@@ -16,9 +16,9 @@ try {
   const client = new pg.Client({ connectionString: url });
   await client.connect();
   try {
-    assert.equal((await client.query('SELECT count(*)::int AS count FROM schema_migrations')).rows[0].count, 2);
+    assert.equal((await client.query('SELECT count(*)::int AS count FROM schema_migrations')).rows[0].count, 6);
     assert.equal((await client.query('SELECT value FROM workspace_metadata WHERE key = $1', ['schema_stage'])).rows[0].value, 'day-two-workspace');
-    const tests = spawnSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', '--test', 'tests/collection.test.ts'], { stdio: 'inherit', env: { ...process.env, TEST_DATABASE_URL: url } });
+    const tests = spawnSync(process.execPath, ['node_modules/tsx/dist/cli.mjs', '--test', '--test-concurrency=1', 'tests/collection.test.ts', 'tests/admin.test.ts', 'tests/reports.test.ts', 'tests/playback.test.ts', 'tests/engagement.test.ts', 'tests/interaction-storage.test.ts', 'tests/retention.test.ts', 'tests/health.test.ts'], { stdio: 'inherit', env: { ...process.env, TEST_DATABASE_URL: url } });
     assert.equal(tests.status, 0, 'PostgreSQL collection integration tests');
     await client.query("UPDATE schema_migrations SET checksum = 'changed'");
     await assert.rejects(migrate(url), /checksum mismatch/);

@@ -11,6 +11,7 @@
   },
   "scripts": {
     "dev": "node --env-file-if-exists=.env scripts/dev.mjs",
+    "start": "node --env-file-if-exists=.env apps/api/dist/server.js",
     "db:dev": "node scripts/database.mjs",
     "db:seed": "node scripts/seed-development.mjs",
     "db:migrate": "node --env-file-if-exists=.env scripts/migrate.mjs",
@@ -19,7 +20,15 @@
     "lint": "eslint .",
     "test": "tsx --test tests/*.test.ts",
     "test:db": "node scripts/test-database.mjs",
-    "check": "npm run lint && npm run typecheck && npm test && npm run build"
+    "check": "npm run lint && npm run typecheck && npm test && npm run build",
+    "owner:set": "node --env-file-if-exists=.env scripts/set-owner.mjs",
+    "test:interactions": "npm run build && node --import tsx scripts/check-interactions.mjs",
+    "test:reports": "npm run build && node --import tsx scripts/check-report-dashboard.mjs",
+    "test:native-tracker": "npm run build -w @site-analytics/tracker && node --import tsx scripts/check-native-tracker.mjs",
+    "test:player": "node scripts/check-native-player.mjs",
+    "test:mediaspace": "node --import tsx scripts/check-mediaspace.mjs",
+    "test:lifecycle": "npm run build -w @site-analytics/tracker && node scripts/check-page-lifecycle.mjs",
+    "test:browser-matrix": "npm run build -w @site-analytics/tracker && node --import tsx scripts/check-browser-matrix.mjs"
   },
   "dependencies": {
     "pg": "^8.16.3"
@@ -31,6 +40,7 @@
     "embedded-postgres": "18.4.0-beta.17",
     "esbuild": "^0.28.2",
     "eslint": "^10.11.0",
+    "playwright": "^1.65.0",
     "tsx": "^4.20.0",
     "typescript": "~6.0.2",
     "typescript-eslint": "^8.0.0"

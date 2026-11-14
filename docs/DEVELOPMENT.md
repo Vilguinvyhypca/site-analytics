@@ -24,8 +24,8 @@ npm run dev
 
 Open <http://127.0.0.1:4200>. The dashboard checks the API through its development
 proxy. The API health endpoint is <http://127.0.0.1:3100/api/health>. Both servers
-bind to loopback. The initial dashboard shows workspace status and planned reports;
-authentication and reports are later tasks. The tracker has a separate opt-in static test page.
+bind to loopback. The dashboard provides owner login and project management;
+the authenticated reporting API is documented in [REPORTING.md](REPORTING.md), with report screens available after sign-in. The tracker has a separate opt-in static test page.
 See [the collection guide](COLLECTION.md) to seed the two isolated development
 projects and opt in to local event storage.
 The tracker package builds to standalone JavaScript; use the [isolated test page](TRACKER.md) for verification.
@@ -50,3 +50,7 @@ The CI workflow runs both commands on Ubuntu.
 Build output lives in ignored `dist` directories. Shared contracts are source
 types consumed by the workspace; the tracker builds to standalone JavaScript.
 No production configuration or tracking activation is part of this setup.
+
+## Owner access
+
+Day 6 adds optional owner login and project management. Follow [owner setup and recovery](OWNER_ACCESS.md) for ADMIN_ORIGIN, AUTH_SECRET, password provisioning, and the disposable browser check. Collection remains off unless explicitly enabled.

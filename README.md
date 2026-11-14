@@ -2,7 +2,7 @@
 
 A self-hosted analytics service in development for multiple websites, with an Angular dashboard, Node.js API, PostgreSQL database, and a small standalone JavaScript tracker.
 
-**Status:** Days 1–3 complete locally. Validated batch collection and PostgreSQL event storage are verified; collection defaults to disabled and the browser tracker remains inert. Day 4 browser tracking is next.
+**Status:** Days 1–10, Day 12 query-index review, and Day 13 data lifecycle are verified locally for the agreed native-video scope, including traffic/engagement reports, anonymous timelines, sharing, clicks, custom events, scrolling and the two-site development integration. Day 11's browser/device matrix remains partial; Day 14 staging/recovery and Day 15 release review remain open. Mux production integration remains deferred; production collection is disabled.
 
 Read the [project proposal](docs/PROPOSAL.md) for scope, architecture, delivery milestones, estimates, and acceptance criteria.
 
@@ -43,24 +43,22 @@ Leave that SSH connection open and visit [http://127.0.0.1:14200](http://127.0.0
 in the Windows browser. The dashboard proxy handles API requests; no separate
 API tunnel is required. Ubuntu's local dashboard address is `http://127.0.0.1:4200`.
 
-The current dashboard shows workspace status and placeholders for content
-performance, video engagement, and session activity. Reports and owner login are not implemented yet. The [browser tracker](docs/TRACKER.md) is verified on an isolated opt-in test site. The [collection guide](docs/COLLECTION.md)
-describes the new opt-in development endpoint.
+The dashboard provides workspace status, owner login/logout and project management.
+Set `ADMIN_ORIGIN=http://127.0.0.1:14200` when using the Windows SSH tunnel, and follow
+[owner access setup and recovery](docs/OWNER_ACCESS.md) to provision your password
+and configure the private auth secret. The [traffic reporting API](docs/REPORTING.md) and dashboard report screens are available.
 
 ## Verification and next work
 
-Day 3 verification passed: `npm run check` (lint, type checks, focused tests,
-and all workspace builds), `npm run test:db` (real PostgreSQL collection,
-deduplication, isolation, rejection and rollback checks plus migration checks),
-and browser rendering/connection-button checks. Physical mobile-browser testing
-remains pending.
+`npm run check` passes lint, type checks, focused tests and builds. `npm run test:db`
+verifies collection, owner/project behavior and exact reporting totals against temporary PostgreSQL. The
+Day 6 browser harness demonstrates two projects, a consented event from the actual
+installation snippet, collection disablement, reload and logout. Mobile viewport
+layout passes; physical mobile-browser testing remains later work. `npm run test:reports` verifies the dashboard against disposable PostgreSQL, including filters, errors, stale requests and session expiry.
 
-Day 3 work is on `feat/day-three-collection`, building on the locally verified
-Day 2 branch. Merge, remote CI, and deployment have not been verified.
-Production collection remains disabled.
-
-Day 4 is locally verified on `feat/day-four-browser-tracker`: consented browser delivery, sessions, sanitized URLs and bounded batching. Next: Day 5 navigation tracking, retry/backoff, exit delivery and prototype verification. Tailscale dashboard
-access remains deferred. See the [progress tracker](docs/PROGRESS.md).
+Work is local on `feat/day-six-owner-admin`. Remote CI, merge and deployment remain
+unverified. See the [progress tracker](docs/PROGRESS.md) for evidence and the Day 10
+handoff. Tailscale dashboard access remains deferred.
 
 ## Delivery target
 
@@ -69,3 +67,11 @@ Target a useful MVP in approximately **1–2 weeks**, and a dependable first rel
 The proposal is versioned project documentation. Keep it in the default `main` branch as implementation proceeds, updating its status and recording significant scope changes.
 
 Day 1 deliverables: [decisions and measurement defaults](docs/DAY_01_DECISIONS.md), [dashboard sketch](docs/DASHBOARD_SKETCH.md).
+
+Native video integration and its automated browser check are documented in [NATIVE_VIDEO.md](docs/NATIVE_VIDEO.md). Use `npm run test:native-tracker` to verify playback through the collector and disposable database.
+
+[Content action hooks and playback summary rules](docs/CONTENT_ACTIONS.md) describe sharing outcomes, cumulative updates and conflict handling.
+
+[Engagement reporting](docs/ENGAGEMENT_REPORTS.md) explains the playback date rules, sharing labels and paginated anonymous timelines.
+
+[Interaction tracking](docs/INTERACTIONS.md) documents explicit click/custom hooks, per-view scroll milestones and `npm run test:interactions`.

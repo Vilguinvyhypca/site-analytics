@@ -1,0 +1,26 @@
+[Unit]
+Description=Site Analytics staging API
+Wants=network-online.target
+After=network-online.target
+StartLimitIntervalSec=60
+StartLimitBurst=5
+
+[Service]
+Type=simple
+User=siteanalytics
+Group=siteanalytics
+WorkingDirectory=/opt/site-analytics
+EnvironmentFile=/etc/site-analytics/staging.env
+ExecStart=/ABSOLUTE/PATH/TO/node /opt/site-analytics/apps/api/dist/server.js
+Restart=on-failure
+RestartSec=30s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+RestrictSUIDSGID=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=multi-user.target

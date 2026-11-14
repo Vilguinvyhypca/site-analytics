@@ -1,3 +1,4 @@
+import { validatePlayback } from './playback.js';
 import type { Pool } from 'pg';
 import type { CollectionBatch, CollectionResponse } from '@site-analytics/contracts';
 export interface CollectionStore { collect(batch: CollectionBatch, origin: string): Promise<CollectionResponse | null> }
@@ -9,9 +10,13 @@ export function postgresStore(pool: Pool): CollectionStore {
       // Lock keeps disable/origin changes from racing an in-flight collection transaction.
       const project = await client.query('SELECT id FROM projects WHERE id = $1 AND collection_enabled AND $2 = ANY(allowed_origins) FOR SHARE', [batch.projectId, origin]);
       if (!project.rowCount) { await client.query('ROLLBACK'); return null; }
+      // Sort locks so overlapping multi-playback batches cannot lock in opposite order.
+      const playbackIds = [...new Set(batch.events.flatMap(e => e.type === 'playback_start' || e.type === 'playback_progress' ? [e.playbackId] : []))].sort();
+      for (const id of playbackIds) await client.query('SELECT pg_advisory_xact_lock(hashtextextended($1, 0))', [JSON.stringify([batch.projectId, id])]);
       let accepted = 0;
       for (const e of batch.events) {
-        const result = await client.query('INSERT INTO events (project_id,event_id,session_id,version,type,occurred_at,payload) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT (project_id,event_id) DO NOTHING', [batch.projectId,e.eventId,e.sessionId,e.version,e.type,e.occurredAt,JSON.stringify(e)]);
+        const result = await client.query('INSERT INTO events (project_id,event_id,session_id,version,type,occurred_at,payload) VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING', [batch.projectId,e.eventId,e.sessionId,e.version,e.type,e.occurredAt,JSON.stringify(e)]);
+        if (result.rowCount && (e.type === 'playback_start' || e.type === 'playback_progress')) await validatePlayback(client, e);
         accepted += result.rowCount ?? 0;
       }
       await client.query('COMMIT');

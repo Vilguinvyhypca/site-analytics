@@ -1,0 +1,103 @@
+// Native HTML video → consented tracker → collector → disposable PostgreSQL.
+import { mkdtemp, rm, readFile } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { execFile } from 'node:child_process';
+import { promisify } from 'node:util';
+import assert from 'node:assert/strict';
+import pg from 'pg';
+import { startDatabase } from './database.mjs';
+import { migrate } from './migrate.mjs';
+import { createApp } from '../apps/api/src/app.ts';
+import { postgresStore } from '../apps/api/src/collection.ts';
+const exec = promisify(execFile);
+const browser = async (...args) => (await exec('node_modules/.bin/agent-browser', ['--session', 'analytics-native-tracker', ...args], { timeout: 45000 })).stdout;
+const evaluate = async code => JSON.parse(await browser('eval', code));
+const directory = await mkdtemp(join(tmpdir(), 'analytics-native-tracker-'));
+let database, pool, app;
+const rows = async () => (await pool.query("SELECT payload FROM events WHERE project_id='native-browser' ORDER BY received_at,event_id")).rows.map(r => r.payload);
+try {
+  await exec('ffmpeg', ['-hide_banner', '-loglevel', 'error', '-y', '-f', 'lavfi', '-i', 'testsrc2=size=320x180:rate=30', '-t', '12', '-c:v', 'libvpx', '-threads', '2', '-b:v', '250k', '-an', join(directory, 'fixture.webm')]);
+  const media = await readFile(join(directory, 'fixture.webm'));
+  database = await startDatabase(join(directory, 'db'), 55437);
+  const url = 'postgresql://analytics_dev:local-development-only@127.0.0.1:55437/site_analytics_dev';
+  await migrate(url); pool = new pg.Pool({ connectionString: url });
+  await pool.query("INSERT INTO projects(id,name,collection_enabled,allowed_origins) VALUES('native-browser','Native video',true,ARRAY['http://127.0.0.1:4313'])");
+  app = createApp(postgresStore(pool));
+  app.get('/', async (_request, reply) => reply.type('text/html').send(`<!doctype html><title>Native tracker verification</title><video id="one" src="/fixture.webm" muted playsinline controls width="320" height="180"></video><video id="two" src="/fixture.webm" muted playsinline controls width="320" height="180"></video><script src="/api/tracker.js"></script><script>
+    window.publicVideo=true; window.p=document.getElementById('one');window.q=document.getElementById('two');
+    window.tracker=SiteAnalytics.createTracker({projectId:'native-browser',collectionUrl:'/api/collect',publicPath:u=>u.pathname==='/'?'/':null});
+    window.first=tracker.trackVideo(p,{contentId:'native-one',isPublic:()=>publicVideo});
+    window.second=tracker.trackVideo(q,{contentId:'native-two',isPublic:()=>true});
+    window.wait=ms=>new Promise(r=>setTimeout(r,ms));
+    window.drain=async()=>{await wait(100);await tracker.flush();await wait(200);await tracker.flush();};
+  </script>`));
+  app.get('/fixture.webm', async (request, reply) => {
+    const range = /^bytes=(\d+)-(\d*)$/.exec(request.headers.range ?? '');
+    const start = range ? Number(range[1]) : 0;
+    const end = range?.[2] ? Math.min(Number(range[2]), media.length - 1) : media.length - 1;
+    if (start > end || start >= media.length) return reply.code(416).header('Content-Range', `bytes */${media.length}`).send();
+    reply.type('video/webm').header('Accept-Ranges', 'bytes');
+    if (range) reply.code(206).header('Content-Range', `bytes ${start}-${end}/${media.length}`);
+    return reply.send(media.subarray(start, end + 1));
+  });
+  await app.listen({ port: 4313, host: '127.0.0.1' });
+  await browser('--args', '--no-sandbox', 'open', 'http://127.0.0.1:4313');
+  await evaluate('(async()=>{await p.play();await wait(400);p.pause();await drain();return true;})()');
+  assert.equal((await rows()).length, 0, 'before consent, playback stores nothing');
+  await evaluate('(async()=>{p.currentTime=0;await wait(100);tracker.start();await drain();return true;})()');
+  assert.deepEqual((await rows()).map(r => r.type), ['page_view']);
+  await evaluate('(async()=>{await p.play();await wait(2100);p.pause();await drain();return true;})()');
+  const latest = async content => (await rows()).filter(r => r.type === 'playback_progress' && r.contentId === content).sort((a,b) => b.sequence-a.sequence)[0];
+  const watched = await latest('native-one');
+  assert(watched.engagedSeconds > 1.6 && watched.engagedSeconds < 2.5);
+  await evaluate('(async()=>{await wait(1200);await drain();return true;})()');
+  assert.equal((await latest('native-one')).engagedSeconds, watched.engagedSeconds);
+  await evaluate('(async()=>{p.currentTime=10.196;await wait(250);await p.play();for(let i=0;i<50&&!p.ended;i++)await wait(100);await drain();return true;})()');
+  const ended = await latest('native-one');
+  assert.equal(ended.ended, true); assert.equal(ended.playbackId, watched.playbackId);
+  const tail = ended.engagedSeconds - watched.engagedSeconds;
+  assert(tail > 1.3 && tail < 1.86, `end segment ${tail}`);
+  assert(ended.coveredIntervals.every(([a,b]) => b < 2.6 || a >= 10.19));
+  const coverage = value => value.coveredIntervals.reduce((sum,[a,b]) => sum+b-a,0);
+  assert(coverage(ended) / ended.durationSeconds < 0.5, 'seeking to end is not completion');
+  await evaluate('(async()=>{p.currentTime=0;p.playbackRate=2;await wait(200);await p.play();await wait(700);p.pause();await drain();return true;})()');
+  const replay = await latest('native-one');
+  assert(replay.engagedSeconds-ended.engagedSeconds > 0.4 && replay.engagedSeconds-ended.engagedSeconds < 1);
+  assert(Math.abs(coverage(replay)-coverage(ended)) < 0.1, 'repeat coverage is a union');
+  await evaluate('(async()=>{await q.play();await wait(700);q.pause();await drain();return true;})()');
+  const other = await latest('native-two'); assert(other); assert.notEqual(other.playbackId, replay.playbackId);
+  const aggregate = (await pool.query('SELECT * FROM playback_summaries WHERE project_id=$1 AND playback_id=$2', ['native-browser',replay.playbackId])).rows[0];
+  assert.equal(aggregate.engaged_seconds, replay.engagedSeconds);
+  assert.equal(aggregate.sequence, replay.sequence); assert.equal(aggregate.started, true); assert.equal(aggregate.completed, false);
+  await evaluate(`(async()=>{
+    tracker.contentOpen({contentId:'native-one',contentType:'video',isPublic:()=>true});
+    for(const outcome of ['clicked','copied','handoff','cancelled','failed']) tracker.recordShare({contentId:'native-one',outcome,isPublic:()=>true});
+    await drain();return true;
+  })()`);
+  const sharing = (await rows()).filter(r=>r.type==='share');
+  assert.deepEqual(sharing.map(r=>r.outcome).sort(), ['clicked','copied','handoff','cancelled','failed'].sort());
+  assert.equal((await rows()).filter(r=>r.type==='content_open').length,1);
+  const beforePrivate = (await rows()).length;
+  await evaluate('(async()=>{publicVideo=false;await p.play();await wait(600);p.pause();await drain();return true;})()');
+  assert.equal((await rows()).length, beforePrivate, 'private content excluded');
+  // Detach flushes before an overlay removes its element. Reattach gets a fresh attempt.
+  await evaluate('(async()=>{publicVideo=true;p.currentTime=0;p.playbackRate=1;await wait(100);await p.play();await wait(600);first.detach();p.pause();await drain();return true;})()');
+  const detachEvents = (await rows()).filter(r => r.type === 'playback_progress' && r.contentId === 'native-one' && r.playbackId !== replay.playbackId);
+  assert(detachEvents.some(r => r.engagedSeconds > 0.3));
+  await evaluate('(async()=>{first=tracker.trackVideo(p,{contentId:"native-three",isPublic:()=>true});p.currentTime=0;await p.play();await wait(600);p.pause();await drain();return true;})()');
+  assert(await latest('native-three'));
+  // Replaying an accepted batch must not duplicate stored events.
+  const count = (await rows()).length;
+  const batch = (await rows()).slice(-10);
+  const duplicated = await app.inject({ method: 'POST', url: '/api/collect', headers: { origin: 'http://127.0.0.1:4313' }, payload: { version: 1, projectId: 'native-browser', events: batch } });
+  assert.equal(duplicated.statusCode, 202, duplicated.body); assert.equal(duplicated.json().duplicates, batch.length); assert.equal((await rows()).length, count);
+  await evaluate('(async()=>{tracker.stop();await p.play();await q.play();await wait(5500);p.pause();q.pause();await drain();return true;})()');
+  assert.equal((await rows()).length, count, 'withdrawal stops both players and heartbeats');
+  assert(!(JSON.stringify(await rows())).includes('fixture.webm'), 'media URLs not sent');
+  assert.equal((await browser('errors')).trim(), '');
+  console.log(JSON.stringify({ result: 'PASS', watchSeconds: watched.engagedSeconds, endSegmentSeconds: tail, checks: ['consent', 'real playback storage', 'pause', 'seek coverage', '2x replay', 'separate players', 'private exclusion', 'detach', 'reattach', 'event deduplication', 'cumulative summary', 'content open', 'sharing outcomes', 'withdrawal', 'no browser errors'] }));
+} finally {
+  await browser('close').catch(() => {});
+  await app?.close(); await pool?.end(); await database?.stop(); await rm(directory, { recursive: true, force: true });
+}

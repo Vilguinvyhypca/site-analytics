@@ -1,6 +1,6 @@
 # Content engagement requirements
 
-Status: Day 3 event contracts and raw storage implemented; player adapters, aggregation and reports remain pending.
+Status: event contracts/raw storage and the [Day 5 local native/Mux experiment](PLAYER_PROTOTYPE.md) are verified. The [native production adapter and collector delivery](NATIVE_VIDEO.md) are verified locally. Mux production integration is deferred per owner direction; [sharing hooks and playback aggregation](CONTENT_ACTIONS.md) are verified locally; [content/video/session reports](ENGAGEMENT_REPORTS.md) are verified locally.
 
 ## Product priority
 
@@ -42,12 +42,12 @@ Pause, buffering, seeking, document visibility, player visibility, playback spee
 ## Implementation steps
 
 - [x] Extend shared contracts with stable content IDs, content type, playback IDs, bounded progress summaries, and sharing outcome categories. Do not send raw signed playback URLs.
-- [ ] Add a small player adapter API alongside the framework-independent tracker. Implement adapters for MediaSpace's native video and Mux players through their supported events.
-- [ ] Accumulate playback measurements locally; send periodic bounded summaries and a best-effort final summary instead of every player time-update event.
-- [ ] Make progress updates idempotent using playback ID and sequence/version information. Retries must not double count time; reject implausible values and handle out-of-order updates.
-- [ ] Store/report engaged playback, unique timeline coverage, playback starts, and sharing actions by project/content/session/date.
-- [ ] Render the three priority reports and label missing or partial observations honestly.
-- [ ] Verify overlays, the feed's scrolling container, concurrent players, and switching between videos without mixing their measurements.
+- [x] Add an explicit native-video adapter API alongside the framework-independent tracker; verify collector delivery. Mux remains prototype-only and deferred per owner direction.
+- [x] Accumulate playback measurements locally; send periodic bounded summaries and a best-effort final summary instead of every player time-update event.
+- [x] Make progress updates idempotent using playback ID and sequence/version information. Retries must not double count time; reject implausible values and handle out-of-order updates.
+- [x] Store/report engaged playback, unique timeline coverage, playback starts, and sharing actions by project/content/session/date.
+- [x] Render the three priority reports and label missing or partial observations honestly.
+- [x] Verify overlays and the feed's scrolling container in the isolated MediaSpace browser journey; verify concurrent native players and switching between video content IDs without mixing their playback identities or coverage in the native adapter regression test. See [pilot evidence](PROGRESS.md) and `tests/native-video.test.ts`.
 
 The collector's browser input remains untrusted. Validate bounds and quotas; do not treat anonymous measurements as audit-grade records. Unexpected browser termination can lose the final interval, so report observed time rather than claiming perfect capture.
 

@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Local player measurement prototype</title>
+<style>body{font:16px system-ui;margin:24px;max-width:1000px}.players{display:flex;flex-wrap:wrap;gap:24px}.players section{width:320px;max-width:100%}video,mux-player{display:block;width:320px;height:180px}button{padding:10px;margin:8px}pre{white-space:pre-wrap;overflow-wrap:anywhere;background:#f3f5f0;padding:12px;font-size:13px}video,mux-player{max-width:100%}</style>
+<h1>Local player measurement prototype</h1>
+<p>Synthetic media. Measurements stay in this page; no analytics are sent.</p>
+<button id="allow">Allow local measurement</button><button id="withdraw">Withdraw and clear</button>
+<p id="status" role="status">Measurement off</p>
+<div class="players"><section><h2>Native video</h2><video id="native" controls muted preload="auto" src="/fixture.webm"></video><h3>Native measurements</h3><p id="native-summary">No measurements</p><pre id="native-output">No measurements</pre></section>
+<section><h2>Mux Player</h2><mux-player id="mux" muted disable-tracking disable-cookies preload="auto" src="/fixture.webm"></mux-player><h3>Mux measurements</h3><p id="mux-summary">No measurements</p><pre id="mux-output">No measurements</pre></section></div>
+<script src="/prototype.js"></script><script type="module" src="/mux-player.mjs"></script>
+<script>
+window.adapters = {};
+window.summaries = [];
+window.eventLog = {native: [], mux: []};
+for (const id of ['native', 'mux']) {
+  const player = document.getElementById(id);
+  for (const event of ['playing','pause','waiting','seeking','seeked','ratechange','ended']) {
+    player.addEventListener(event, () => { eventLog[id].push(event); if (eventLog[id].length > 100) eventLog[id].shift(); });
+  }
+}
+document.querySelector('#allow').onclick = () => {
+  for (const id of ['native', 'mux']) {
+    if (!adapters[id]) adapters[id] = PlayerPrototype.attachPrototype(document.getElementById(id), 'synthetic-' + id, value => {
+      summaries.push(value); if (summaries.length > 100) summaries.shift();
+      document.getElementById(id + '-output').textContent = JSON.stringify(value, null, 2);
+      document.getElementById(id + '-summary').textContent = `Watch time: ${value.engagedSeconds.toFixed(2)} seconds · Coverage: ${value.coverage === null ? 'unknown' : (value.coverage * 100).toFixed(1) + '%'}`;
+    });
+  }
+  document.querySelector('#status').textContent = 'Local measurement on';
+};
+document.querySelector('#withdraw').onclick = () => {
+  Object.values(adapters).forEach(adapter => adapter.dispose(true));
+  window.adapters = {}; window.summaries = [];
+  for (const id of ['native', 'mux']) {
+    document.getElementById(id + '-output').textContent = 'No measurements';
+    document.getElementById(id + '-summary').textContent = 'No measurements';
+  }
+  document.querySelector('#status').textContent = 'Measurement off';
+};
+</script>
+</html>

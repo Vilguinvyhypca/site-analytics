@@ -23,7 +23,8 @@ Status: design baseline completed; implementation has not started. Defaults belo
 | Time | Store timestamps in UTC; default reports to America/New_York | Display chosen report zone and apply it consistently at day boundaries |
 | Consent | Off until the host explicitly permits collection; stop and clear unsent events/identifier when revoked | Host owns the consent UI; no third-party service required |
 | URL handling | Path plus allowlisted profile/content IDs; strip query/fragment; referrer hostname only | Avoid signed media URLs and personal URL data |
-| Capacity test | 100,000 events/day and a 50 events/second burst for 60 seconds | A provisional synthetic test, not a production capacity claim; revise after measurement |
+| Capacity test | Initial development pilot is expected to serve a few simultaneous users | Owner direction, October 29, 2026. The earlier 100,000 events/day and 50 events/second burst are withdrawn as an MVP target; no measured capacity claim is made. Set a numeric operating ceiling before production expansion. |
+| Overload behavior | Protect service by pausing/rejecting collection temporarily when measured load reaches its operating ceiling | Owner direction, October 31, 2026. Prefer bounded backpressure and a clear temporary-unavailable response; resume when load recovers. Do not introduce user fees or billing prompts based on load in this release. |
 | Request limits | At most 50 events and 64 KiB per batch; bounded tracker queue | Bound memory, database work, and retry cost; test actual encoded payload sizes |
 | Watch heartbeat | Every 5 seconds during eligible playback, plus best-effort final summary | Final interval can be lost; label observed time honestly |
 | Player eligibility | Document visible and at least 50% of player area in viewport | Engagement proxy, not proof of attention; test overlays and mobile feed |
